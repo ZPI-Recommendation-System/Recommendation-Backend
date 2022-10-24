@@ -1,8 +1,12 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BenchmarkEntity } from "./benchmark.entity";
 
 @Entity()
 export class GraphicsEntity {
-  @PrimaryColumn()
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   graphicsCardModel: string;
 
   @Column({ nullable: true })
@@ -10,4 +14,7 @@ export class GraphicsEntity {
 
   @Column({ nullable: true })
   graphicsCardVRam: number;
+
+  @ManyToOne(() => BenchmarkEntity)
+  benchmark: BenchmarkEntity;
 }

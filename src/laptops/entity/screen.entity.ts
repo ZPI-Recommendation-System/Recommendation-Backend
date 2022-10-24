@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
 export class ScreenEntity {
 
   @PrimaryGeneratedColumn()
-  screenId: number;
+  id: number;
 
   @Column("float")
   diagonalScreenInches: number;

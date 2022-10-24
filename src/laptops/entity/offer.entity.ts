@@ -4,7 +4,7 @@ import { ModelEntity } from "./model.entity";
 @Entity()
 export class OfferEntity {
   @PrimaryGeneratedColumn()
-  offerId: number;
+  id: number;
 
   @Column()
   offerName: string;

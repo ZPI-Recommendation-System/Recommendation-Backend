@@ -3,14 +3,18 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
 import { ProcessorEntity } from "./entity/processor.entity";
 import { ScreenEntity } from "./entity/screen.entity";
-import { RamEntity } from "./entity/ram.entity";
-import { StorageEntity } from "./entity/storage.entity";
 import { GraphicsEntity } from "./entity/graphics.entity";
 import { ConnectionEntity } from "./entity/connection.entity";
 import { ControlEntity } from "./entity/control.entity";
 import { CommunicationEntity } from "./entity/communication.entity";
 import { MultimediaEntity } from "./entity/multimedia.entity";
 import { OfferEntity } from "./entity/offer.entity";
+import { BenchmarkEntity } from "./entity/benchmark.entity";
+import { LaptopsServices } from "./laptops.service";
+import { LaptopDB } from "./laptop.db";
+import { LaptopsController } from "./laptops.controller";
+import { ModelImgEntity } from "./entity/model-img.entity";
+import { DriveTypeEntity } from "./entity/drive-type.entity";
 
 @Module({
   imports: [
@@ -18,16 +22,19 @@ import { OfferEntity } from "./entity/offer.entity";
       ModelEntity,
       ProcessorEntity,
       ScreenEntity,
-      RamEntity,
-      StorageEntity,
       GraphicsEntity,
       ConnectionEntity,
       ControlEntity,
       MultimediaEntity,
       CommunicationEntity,
-      OfferEntity
+      OfferEntity,
+      BenchmarkEntity,
+      ModelImgEntity,
+      DriveTypeEntity
     ])
-  ]
+  ],
+  providers: [LaptopsServices, LaptopDB],
+  controllers: [LaptopsController]
 })
 export class LaptopsModule {
 }

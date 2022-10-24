@@ -1,8 +1,13 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { BenchmarkEntity } from "./benchmark.entity";
 
 @Entity()
 export class ProcessorEntity {
-  @PrimaryColumn()
+
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
   model: string;
 
   @Column()
@@ -13,6 +18,9 @@ export class ProcessorEntity {
 
   @Column("float")
   frequency: number;
+
+  @ManyToOne(() => BenchmarkEntity)
+  benchmark: BenchmarkEntity;
 
 
 }
