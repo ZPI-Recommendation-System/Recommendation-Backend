@@ -28,13 +28,13 @@ export class ModelEntity {
   @Column({ nullable: true })
   producentCode: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   batterySizeWH: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   batterySizeMAH: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   batteryTime: number;
 
   @Column({ nullable: false })
@@ -43,16 +43,16 @@ export class ModelEntity {
   @Column({ nullable: true })
   color: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   width: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   length: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   depth: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "float" })
   weight: number;
 
   @ManyToOne(() => ProcessorEntity)
@@ -61,23 +61,23 @@ export class ModelEntity {
   @ManyToOne(() => ScreenEntity)
   screen: ScreenEntity;
 
-  @Column()
+  @Column("float")
   ramAmount: number;
 
   @Column()
-  frequency: number;
+  ramFrequency: number;
 
   @Column()
-  numberOfSlots: number;
+  ramNumberOfSlots: number;
 
   @Column()
-  numberOfFreeSlots: number;
+  ramNumberOfFreeSlots: number;
 
   @Column()
   ramType: string;
 
   @Column()
-  maxRamAmount: number;
+  ramMaxAmount: number;
 
   @Column()
   driveStorage: number;

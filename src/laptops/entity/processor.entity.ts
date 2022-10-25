@@ -3,7 +3,6 @@ import { BenchmarkEntity } from "./benchmark.entity";
 
 @Entity()
 export class ProcessorEntity {
-
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,6 +20,4 @@ export class ProcessorEntity {
 
   @ManyToOne(() => BenchmarkEntity)
   benchmark: BenchmarkEntity;
-
-
 }

@@ -18,5 +18,4 @@ export class LaptopDB {
   putLaptop(entity: ModelEntity) {
     return this.modelsRepository.save(entity);
   }
-
 }
