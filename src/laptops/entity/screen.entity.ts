@@ -6,21 +6,21 @@ export class ScreenEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column("float")
+  @Column("float", { nullable: true })
   diagonalScreenInches: number;
 
-  @Column()
+  @Column({ nullable: true })
   resolution: string;
 
-  @Column()
+  @Column({ nullable: true })
   screenFinish: string;
 
-  @Column()
+  @Column({ nullable: true })
   screenType: string;
 
-  @Column()
+  @Column({ nullable: true })
   refreshRate: number;
 
-  @Column()
+  @Column({ nullable: true })
   touchScreen: boolean;
 }

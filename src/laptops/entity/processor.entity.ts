@@ -6,18 +6,18 @@ export class ProcessorEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column()
+  @Column({ nullable: true })
   model: string;
 
-  @Column()
+  @Column({ nullable: true })
   series: string;
 
-  @Column()
+  @Column({ nullable: true })
   cores: number;
 
-  @Column("float")
+  @Column("float", { nullable: true })
   frequency: number;
 
-  @ManyToOne(() => BenchmarkEntity)
+  @ManyToOne(() => BenchmarkEntity, { nullable: true })
   benchmark: BenchmarkEntity;
 }

@@ -61,28 +61,28 @@ export class ModelEntity {
   @ManyToOne(() => ScreenEntity)
   screen: ScreenEntity;
 
-  @Column("float")
+  @Column("float", { nullable: true })
   ramAmount: number;
 
-  @Column()
+  @Column({ nullable: true })
   ramFrequency: number;
 
-  @Column()
+  @Column({ nullable: true })
   ramNumberOfSlots: number;
 
-  @Column()
+  @Column({ nullable: true })
   ramNumberOfFreeSlots: number;
 
-  @Column()
+  @Column({ nullable: true })
   ramType: string;
 
-  @Column()
+  @Column({ nullable: true })
   ramMaxAmount: number;
 
-  @Column()
+  @Column({ nullable: true })
   driveStorage: number;
 
-  @Column()
+  @Column({ nullable: true })
   driveType: string;
 
   @Column({ nullable: true })
@@ -107,7 +107,7 @@ export class ModelEntity {
   @JoinTable()
   controls: ControlEntity[];
 
-  @OneToMany(() => OfferEntity, (offer) => offer.model)
+  @OneToMany(() => OfferEntity, (offer) => offer.model, { nullable: true })
   offers: OfferEntity[];
 
   @OneToOne(() => BenchmarkEntity, { nullable: true })
@@ -117,7 +117,7 @@ export class ModelEntity {
   @JoinTable()
   drives: DriveTypeEntity[];
 
-  @ManyToMany(() => ModelImgEntity)
+  @ManyToMany(() => ModelImgEntity, { nullable: true })
   @JoinTable()
   images: ModelImgEntity[];
 }
