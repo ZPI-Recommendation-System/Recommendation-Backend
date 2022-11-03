@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { OfferEntity } from "./entity/offer.entity";
 
 @Injectable()
@@ -16,7 +16,6 @@ export class LaptopsServices {
     return this.laptopsRepo
       .findOne({
         where: { id: id },
-        relationLoadStrategy: "query",
         relations: {
           processor: true,
           screen: true,
@@ -68,18 +67,46 @@ export class LaptopsServices {
     return a;
   };
 
-  getListLaptops(
+  async massGetOffers(items: []) {
+    return this.offersRepo.findBy({ model: In(items) });
+  }
+
+  async getListLaptops(
     limit = 10,
     partialFilter: Partial<ModelEntity> = {},
     displayParams: string[] = []
   ) {
-    return this.laptopsRepo
+    const items: any[] = await this.laptopsRepo
       .find({
         take: limit,
-        where: partialFilter
+        where: partialFilter,
+        relations: {
+          processor: true,
+          screen: true,
+          graphics: true,
+          benchmark: true,
+          communications: true,
+          multimedia: true,
+          drives: true,
+          connections: true,
+          controls: true,
+          images: true
+        }
       })
       .then((items) => {
-        return items.map((item) => this.filterItem(item, displayParams));
+        return items.map((item) => {
+          return this.filterItem(item, displayParams);
+        });
       });
+    // if (displayParams.includes('offers')) {
+    //   console.log(items);
+    //   for (const item in items) {
+    //     console.log(item)
+    //     console.log(items[item])
+    //     items[item]['offers'] = this.offersRepo.findBy({ model: item });
+    //     console.log(items[item]);
+    //   }
+    // }
+    return items;
   }
 }

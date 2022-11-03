@@ -12,7 +12,7 @@ export class OfferEntity {
   @Column()
   offerURL: string;
 
-  @Column("float")
+  @Column("float", { nullable: true })
   offerPrice: number;
 
   @ManyToOne(() => ModelEntity, { nullable: true })

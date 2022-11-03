@@ -32,7 +32,7 @@ export class LaptopsController {
         return {
           limit: limit,
           query: query,
-          partialFilter: partialFilter,
+          filter: partialFilter,
           items: it
         };
       })
