@@ -1,4 +1,14 @@
-import { Column, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  JoinTable,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+  PrimaryColumn
+} from "typeorm";
 import { ProcessorEntity } from "./processor.entity";
 import { ScreenEntity } from "./screen.entity";
 import { GraphicsEntity } from "./graphics.entity";
@@ -56,9 +66,11 @@ export class ModelEntity {
   weight: number;
 
   @ManyToOne(() => ProcessorEntity)
+  @JoinColumn()
   processor: ProcessorEntity;
 
   @ManyToOne(() => ScreenEntity)
+  @JoinColumn()
   screen: ScreenEntity;
 
   @Column("float", { nullable: true })
@@ -89,6 +101,7 @@ export class ModelEntity {
   hddSpeed: string;
 
   @ManyToOne(() => GraphicsEntity)
+  @JoinColumn()
   graphics: GraphicsEntity;
 
   @ManyToMany(() => ConnectionEntity, { nullable: true })
@@ -111,6 +124,7 @@ export class ModelEntity {
   offers: OfferEntity[];
 
   @OneToOne(() => BenchmarkEntity, { nullable: true })
+  @JoinColumn()
   benchmark: BenchmarkEntity;
 
   @ManyToMany(() => DriveTypeEntity, { nullable: true })

@@ -11,7 +11,6 @@ import { MultimediaEntity } from "./entity/multimedia.entity";
 import { OfferEntity } from "./entity/offer.entity";
 import { BenchmarkEntity } from "./entity/benchmark.entity";
 import { LaptopsServices } from "./laptops.service";
-import { LaptopDB } from "./laptop.db";
 import { LaptopsController } from "./laptops.controller";
 import { ModelImgEntity } from "./entity/model-img.entity";
 import { DriveTypeEntity } from "./entity/drive-type.entity";
@@ -33,8 +32,9 @@ import { DriveTypeEntity } from "./entity/drive-type.entity";
       DriveTypeEntity
     ])
   ],
-  providers: [LaptopsServices, LaptopDB],
-  controllers: [LaptopsController]
+  providers: [LaptopsServices],
+  controllers: [LaptopsController],
+  exports: [LaptopsServices]
 })
 export class LaptopsModule {
 }
