@@ -32,7 +32,7 @@ export class ModelEntity {
   @Column({ nullable: false })
   model: string;
 
-  @Column({ nullable: false })
+  @Column({ nullable: true })
   type: string;
 
   @Column({ nullable: true })

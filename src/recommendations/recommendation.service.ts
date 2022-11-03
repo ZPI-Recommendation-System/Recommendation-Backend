@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { FormDto } from "./dto/filter.dto";
+import { FormDto } from "./dto/form.dto";
 import { ModelEntity } from "../laptops/entity/model.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
 import { WeakFilter } from "./filters/weak.filter";

@@ -1,5 +1,5 @@
 import { Body, Controller, Post } from "@nestjs/common";
-import { FormDto } from "./dto/filter.dto";
+import { FormDto } from "./dto/form.dto";
 import { RecommendationService } from "./recommendation.service";
 import { RecommendationDto } from "./dto/recommendation.dto";
 
