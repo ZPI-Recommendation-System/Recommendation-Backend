@@ -10,7 +10,7 @@ import { RecommendationModule } from "./recommendations/recommendation.module";
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "4.233.66.59",
+      host: "zpi.zgrate.ovh",
       port: 5432,
       username: "backend",
       password: "backend123",

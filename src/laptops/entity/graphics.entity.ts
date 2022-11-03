@@ -13,7 +13,7 @@ export class GraphicsEntity {
   graphicsCardType: string;
 
   @Column({ nullable: true })
-  graphicsCardVRam: number;
+  graphicsCardVRam: string;
 
   @ManyToOne(() => BenchmarkEntity)
   benchmark: BenchmarkEntity;

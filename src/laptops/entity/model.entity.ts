@@ -47,9 +47,6 @@ export class ModelEntity {
   @Column({ nullable: true, type: "float" })
   batteryTime: number;
 
-  @Column({ nullable: false })
-  drive: string;
-
   @Column({ nullable: true })
   color: string;
 
@@ -98,7 +95,7 @@ export class ModelEntity {
   driveType: string;
 
   @Column({ nullable: true })
-  hddSpeed: string;
+  hddSpeed: number;
 
   @ManyToOne(() => GraphicsEntity)
   @JoinColumn()
