@@ -1,14 +1,4 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  JoinTable,
-  ManyToMany,
-  ManyToOne,
-  OneToMany,
-  OneToOne,
-  PrimaryColumn
-} from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
 import { ProcessorEntity } from "./processor.entity";
 import { ScreenEntity } from "./screen.entity";
 import { GraphicsEntity } from "./graphics.entity";
@@ -17,7 +7,6 @@ import { MultimediaEntity } from "./multimedia.entity";
 import { CommunicationEntity } from "./communication.entity";
 import { ControlEntity } from "./control.entity";
 import { OfferEntity } from "./offer.entity";
-import { BenchmarkEntity } from "./benchmark.entity";
 import { DriveTypeEntity } from "./drive-type.entity";
 import { ModelImgEntity } from "./model-img.entity";
 
@@ -120,9 +109,6 @@ export class ModelEntity {
   @OneToMany(() => OfferEntity, (offer) => offer.model, { nullable: true })
   offers: OfferEntity[];
 
-  @OneToOne(() => BenchmarkEntity, { nullable: true })
-  @JoinColumn()
-  benchmark: BenchmarkEntity;
 
   @ManyToMany(() => DriveTypeEntity, { nullable: true })
   @JoinTable()
