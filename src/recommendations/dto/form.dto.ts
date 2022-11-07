@@ -76,7 +76,8 @@ export type ScreenSize =
 export class FormDto {
   ramInUnits: number;
   @ApiProperty({
-    description: "'Aplikacje biurowe i internet'\n" +
+    description:
+      "'Aplikacje biurowe i internet'\n" +
       "  | 'Gry'\n" +
       "  | 'Renderowanie Filmów'"
   })
@@ -89,7 +90,7 @@ export class FormDto {
   preferredScreenSizes: ScreenSize[];
   screenPreferences: ScreenPreferences;
   batteryRunTime: number;
-  minDiscSize: number;
+  minDiscSize = 0;
   internetPreferences: InternetPreferences;
   dataPreferences: DataPreferences;
 }

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
-import { In, Repository } from "typeorm";
+import { FindOptionsWhere, In, Repository } from "typeorm";
 import { OfferEntity } from "./entity/offer.entity";
 
 @Injectable()
@@ -10,6 +10,14 @@ export class LaptopsServices {
     @InjectRepository(ModelEntity) private laptopsRepo: Repository<ModelEntity>,
     @InjectRepository(OfferEntity) private offersRepo: Repository<OfferEntity>
   ) {
+  }
+
+  findLaptop(filter: FindOptionsWhere<ModelEntity>, limit: number) {
+    return this.laptopsRepo.find({
+      take: limit,
+      where: filter,
+      relations: this.getRelations(["all"])
+    });
   }
 
   getLaptop(
@@ -73,43 +81,52 @@ export class LaptopsServices {
     return this.offersRepo.findBy({ model: In(items) });
   }
 
+  getRelations(displayParams: string[]): any {
+    const isAll = displayParams.includes("all");
+
+    return {
+      processor: isAll ? true : displayParams.includes("processor"),
+      screen: isAll ? true : displayParams.includes("screen"),
+      graphics: isAll ? true : displayParams.includes("graphics"),
+      communications: isAll ? true : displayParams.includes("communications"),
+      multimedia: isAll ? true : displayParams.includes("multimedia"),
+      drives: isAll ? true : displayParams.includes("drives"),
+      connections: isAll ? true : displayParams.includes("connections"),
+      controls: isAll ? true : displayParams.includes("controls"),
+      images: isAll ? true : displayParams.includes("images")
+    };
+  }
+
   async getListLaptops(
     limit = 10,
     partialFilter: Partial<ModelEntity> = {},
     displayParams: string[] = [],
-    ids: string[] = []
+    idsString = ""
   ) {
-
-    const items: any[] = await this.laptopsRepo
-      .find({
-        take: limit,
-        where: partialFilter,
-        relations: {
-          processor: true,
-          screen: true,
-          graphics: true,
-          communications: true,
-          multimedia: true,
-          drives: true,
-          connections: true,
-          controls: true,
-          images: true
-        }
-      })
-      .then((items) => {
-        return items.map((item) => {
-          return this.filterItem(item, displayParams);
+    console.log(idsString);
+    if (idsString == "") {
+      return await this.laptopsRepo
+        .find({
+          take: limit,
+          where: partialFilter,
+          relations: this.getRelations(displayParams)
+        })
+        .then((items) => {
+          return items.map((item) => {
+            return this.filterItem(item, displayParams);
+          });
         });
-      });
-    // if (displayParams.includes('offers')) {
-    //   console.log(items);
-    //   for (const item in items) {
-    //     console.log(item)
-    //     console.log(items[item])
-    //     items[item]['offers'] = this.offersRepo.findBy({ model: item });
-    //     console.log(items[item]);
-    //   }
-    // }
-    return items;
+    } else {
+      return await this.laptopsRepo
+        .find({
+          where: { id: In(idsString.split(",")) },
+          relations: this.getRelations(displayParams)
+        })
+        .then((items) => {
+          return items.map((item) => {
+            return this.filterItem(item, displayParams);
+          });
+        });
+    }
   }
 }

@@ -1,6 +1,8 @@
-import { ModelBoolean, ValueBoolean } from "./base.predicate";
-import { ModelEntity } from "../../laptops/entity/model.entity";
+import { PredicateWithCustom } from "./base.predicate";
+import { FindOperator } from "typeorm/find-options/FindOperator";
 
-export const DRIVE_SIZE = (predicate: ValueBoolean): ModelBoolean => {
-  return (value: ModelEntity) => predicate(value.driveStorage);
+export const DRIVE_SIZE = (
+  value: FindOperator<number>
+): PredicateWithCustom => {
+  return { driveStorage: value };
 };
