@@ -36,10 +36,10 @@ export class LaptopsController {
     @Query("query") query = "",
     @Query("limit") limit = 10,
     @Query("filter") partialFilter: Partial<LaptopsModule> = undefined,
-    @Query("ids") ids: string = ""
+    @Query("ids") ids = ""
   ): Promise<GetLaptopsDto> {
     return this.laptopService
-      .getListLaptops(limit, partialFilter, query.split(","), ids.split(","))
+      .getListLaptops(limit, partialFilter, query.split(","), ids)
       .then((it) => {
         return {
           limit: limit,

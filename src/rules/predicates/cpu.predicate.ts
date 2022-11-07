@@ -1,11 +1,11 @@
 //PREDEFINED CPU PREDICATED
-import { ModelEntity } from "../../laptops/entity/model.entity";
-import { ModelBoolean, ValueBoolean } from "./base.predicate";
+import { PredicateWithCustom } from "./base.predicate";
+import { FindOperator } from "typeorm/find-options/FindOperator";
 
-export const CPU_FREQ = (predicate: ValueBoolean): ModelBoolean => {
-  return (value: ModelEntity) => predicate(value.processor.frequency);
+export const CPU_FREQ = (value: FindOperator<number>): PredicateWithCustom => {
+  return { processorFreq: value };
 };
 
-export const CPU_CORES = (predicate: ValueBoolean): ModelBoolean => {
-  return (value) => predicate(value.processor.cores);
+export const CPU_CORES = (value: FindOperator<number>): PredicateWithCustom => {
+  return { processorCores: value };
 };
