@@ -4,6 +4,4 @@ import { Entity, PrimaryGeneratedColumn } from "typeorm";
 export class StorageEntity {
   @PrimaryGeneratedColumn()
   driveId: number;
-
-
 }

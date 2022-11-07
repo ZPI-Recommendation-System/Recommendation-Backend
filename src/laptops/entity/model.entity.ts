@@ -26,10 +26,10 @@ export class ModelEntity {
   @PrimaryColumn()
   id: string;
 
-  @Column({ nullable: false })
+  @Column()
   name: string;
 
-  @Column({ nullable: false })
+  @Column()
   model: string;
 
   @Column({ nullable: true })
@@ -70,7 +70,7 @@ export class ModelEntity {
   @JoinColumn()
   screen: ScreenEntity;
 
-  @Column("float", { nullable: true })
+  @Column("float")
   ramAmount: number;
 
   @Column({ nullable: true })
@@ -88,7 +88,7 @@ export class ModelEntity {
   @Column({ nullable: true })
   ramMaxAmount: number;
 
-  @Column({ nullable: true })
+  @Column()
   driveStorage: number;
 
   @Column({ nullable: true })
@@ -128,7 +128,7 @@ export class ModelEntity {
   @JoinTable()
   drives: DriveTypeEntity[];
 
-  @ManyToMany(() => ModelImgEntity, { nullable: true })
+  @ManyToMany(() => ModelImgEntity)
   @JoinTable()
   images: ModelImgEntity[];
 }

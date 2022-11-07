@@ -6,7 +6,7 @@ export class ProcessorEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ nullable: true })
+  @Column()
   model: string;
 
   @Column({ nullable: true })

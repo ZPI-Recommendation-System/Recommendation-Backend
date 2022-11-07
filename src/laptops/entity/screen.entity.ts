@@ -6,7 +6,7 @@ export class ScreenEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column("float", { nullable: true })
+  @Column("float")
   diagonalScreenInches: number;
 
   @Column({ nullable: true })
