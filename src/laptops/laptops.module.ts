@@ -30,7 +30,7 @@ import { DriveTypeEntity } from "./entity/drive-type.entity";
       BenchmarkEntity,
       ModelImgEntity,
       DriveTypeEntity
-    ])
+    ]),
   ],
   providers: [LaptopsServices],
   controllers: [LaptopsController],

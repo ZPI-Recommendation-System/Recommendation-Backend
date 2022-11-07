@@ -1,7 +1,7 @@
 import { Body, Controller, Post } from "@nestjs/common";
 import { FormDto } from "./dto/form.dto";
 import { RecommendationService } from "./recommendation.service";
-import { RecommendationDto } from "./dto/recommendation.dto";
+import { RecommendationDTOBack } from "./dto/recommendation.dto";
 
 @Controller("recommendations")
 export class RecommendationController {
@@ -11,7 +11,8 @@ export class RecommendationController {
   @Post()
   async getRecommendations(
     @Body() form: FormDto
-  ): Promise<RecommendationDto[]> {
-    return [];
+  ): Promise<RecommendationDTOBack> {
+    console.log(form);
+    return { status: "ok", models: [], weak_filters: [] };
   }
 }

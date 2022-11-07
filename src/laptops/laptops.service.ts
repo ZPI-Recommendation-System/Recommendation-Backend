@@ -12,7 +12,10 @@ export class LaptopsServices {
   ) {
   }
 
-  getLaptop(id: string, displayParams: string[]): Promise<any> {
+  getLaptop(
+    id: string,
+    displayParams: string[]
+  ): Promise<Partial<ModelEntity> | undefined> {
     return this.laptopsRepo
       .findOne({
         where: { id: id },
@@ -20,7 +23,6 @@ export class LaptopsServices {
           processor: true,
           screen: true,
           graphics: true,
-          benchmark: true,
           communications: true,
           multimedia: true,
           drives: true,
@@ -74,8 +76,10 @@ export class LaptopsServices {
   async getListLaptops(
     limit = 10,
     partialFilter: Partial<ModelEntity> = {},
-    displayParams: string[] = []
+    displayParams: string[] = [],
+    ids: string[] = []
   ) {
+
     const items: any[] = await this.laptopsRepo
       .find({
         take: limit,
@@ -84,7 +88,6 @@ export class LaptopsServices {
           processor: true,
           screen: true,
           graphics: true,
-          benchmark: true,
           communications: true,
           multimedia: true,
           drives: true,

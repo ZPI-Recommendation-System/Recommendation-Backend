@@ -5,16 +5,18 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { LaptopsModule } from "./laptops/laptops.module";
 import { UsersModule } from "./users/user.module";
 import { RecommendationModule } from "./recommendations/recommendation.module";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
   imports: [
+    ConfigModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "postgres",
-      host: "zpi.zgrate.ovh",
-      port: 5432,
-      username: "backend",
-      password: "backend123",
-      database: "recommendation-system",
+      host: process.env.DB_HOST,
+      port: +process.env.DB_PORT,
+      username: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_DB,
       synchronize: true,
       autoLoadEntities: true
     }),
