@@ -10,11 +10,22 @@ export class RecommendationController {
 
   @Post()
   async getRecommendations(
-    @Param("limit") limit: number = 0,
+    @Param("limit") limit = 0,
     @Body() form: FormDto
   ): Promise<RecommendationDTOBack | any> {
     console.log(form);
-    return this.recommendationService.processRecommendation(form, limit);
+    return this.recommendationService
+      .processRecommendation(form, limit)
+      .then((it) => {
+        return {
+          status: "ok",
+          length: it.models.length,
+          models: it.models,
+          weakFilters: it.weakFilters,
+          comboFilters: it["comboFilters"]
+        };
+      });
+
     // return { status: 'ok', models: [], weak_filters: [] };
   }
 }

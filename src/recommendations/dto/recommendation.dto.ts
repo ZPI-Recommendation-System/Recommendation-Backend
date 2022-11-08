@@ -1,7 +1,8 @@
 export class RecommendationDTOBack {
   status: "ok" | "error";
+  length: number;
   models: RecommendationDto[];
-  weak_filters: RecommendationDto[];
+  weakFilters: RecommendationDto[];
 }
 
 export class RecommendationDto {

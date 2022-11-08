@@ -1,5 +1,5 @@
 import { Predicate, PredicateWithCustom } from "./base.predicate";
-import { In, LessThan, MoreThan } from "typeorm";
+import { In, LessThan, MoreThan, Raw } from "typeorm";
 import { ScreenSize } from "../../recommendations/dto/form.dto";
 
 const mapper = {
@@ -10,14 +10,14 @@ const mapper = {
   processorCores: (value): Predicate => {
     return { processor: { cores: value } };
   },
-  connectionsHas: (value: string[]): Predicate => {
-    return { connections: { connectionName: In(value) } };
+  connectionsHas: (value: string[][]): Predicate => {
+    return { connections: { connectionName: Raw(TransformArrayArrayToQuery(value)) } };
   },
-  communicationHas: (value: string[]): Predicate => {
-    return { communications: { communicationName: In(value) } };
+  communicationHas: (value: string[][]): Predicate => {
+    return { communications: { communicationName: Raw(TransformArrayArrayToQuery(value)) } };
   },
-  screenSizes: (value: ScreenSize[]): Predicate => {
-    return { screen: { diagonalScreenInches: In(value) } };
+  screenSizes: (value: ScreenSize[][]): Predicate => {
+    return { screen: { diagonalScreenInches: In(value.flat(1)) } };
   }
 };
 
@@ -42,10 +42,13 @@ export const toModel = (model: PredicateWithCustom): Predicate => {
   const m: Predicate = {};
   for (const key in model) {
     if (key in mapper) {
+      if (key == "connectionsHas") {
+        console.log(TransformArrayArrayToQuery(model[key])("test"));
+      }
       const result = mapper[key](model[key]);
       mergeObject(result, m);
     } else if (Array.isArray(model[key])) {
-      m[key] = In(model[key]);
+      m[key] = In(model[key].flat(1));
     } else {
       m[key] = model[key];
     }
@@ -53,6 +56,17 @@ export const toModel = (model: PredicateWithCustom): Predicate => {
   return m;
 };
 
+export function TransformArrayArrayToQuery(arrayArray: string[][]) {
+  let s = "";
+  const arrays = arrayArray.map(it => {
+    return "'" + it.join("', '") + "'";
+  });
+  for (let i = 0; i < arrays.length; i++) {
+    s += ` AND ^^ IN (${arrays[i]})`;
+  }
+  s = s.slice(5);
+  return (query) => s.replace(/\^\^/gi, query);
+}
 
 export const AND = (models: PredicateWithCustom[]): PredicateWithCustom => {
   const finalOption: PredicateWithCustom = {};
@@ -67,13 +81,11 @@ export const AND = (models: PredicateWithCustom[]): PredicateWithCustom => {
         } else if (finalOption[key] instanceof LessThan) {
           finalOption[key] =
             model[key] < finalOption[key] ? model[key] : finalOption[key];
-        } else if (typeof model[key] == "string") {
-          finalOption[key].push(model[key]);
         } else if (Array.isArray(model[key])) {
-          finalOption[key] = finalOption[key].concat(model[key]);
+          finalOption[key].push(model[key]);
         }
       } else {
-        if (typeof model[key] == "string") {
+        if (typeof model[key] == "string" || Array.isArray(model[key])) {
           finalOption[key] = [model[key]];
         } else {
           finalOption[key] = model[key];
