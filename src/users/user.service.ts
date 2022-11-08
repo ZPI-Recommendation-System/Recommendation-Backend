@@ -1,11 +1,11 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, OnModuleInit } from "@nestjs/common";
 import { UserEntity } from "./entity/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import bcrypt from "bcrypt";
 
 @Injectable()
-export class UserService {
+export class UserService implements OnModuleInit {
   private tokens: object[];
 
   constructor(
@@ -33,5 +33,8 @@ export class UserService {
   }
 
   findUserBySessionToken() {
+  }
+
+  onModuleInit(): any {
   }
 }

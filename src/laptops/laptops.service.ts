@@ -16,7 +16,7 @@ export class LaptopsServices {
     return this.laptopsRepo.find({
       take: limit,
       where: filter,
-      relations: this.getRelations(["all"])
+      // relations: this.getRelations(["all"])
     });
   }
 

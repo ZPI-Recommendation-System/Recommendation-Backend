@@ -1,10 +1,10 @@
 import { WeakFilter } from "./weak.filter";
-import { CONNECTION_HAS } from "../../rules/predicates/various.predicate";
+import { COMMUNICATION_HAS, CONNECTION_HAS } from "../../rules/predicates/various.predicate";
 import { HAS_TOUCHSCREEN } from "../../rules/predicates/screen.predicate";
 import { PredicateWithCustom } from "../../rules/predicates/base.predicate";
 
 export const weakFilterWeights = {
-  battery_time: 10,
+  battery_run_time: 10,
   has_connection_weak: 2,
   has_connection_strong: 5,
   screen_touchscreen: 1,
@@ -37,6 +37,6 @@ export const preGeneratedFilters = {
   has_lan_port: ConstructWeakFilter(
     "has_lan_port",
     weakFilterWeights.has_connection_weak,
-    CONNECTION_HAS("LAN 10/100 Mbps", "LAN 10/100/1000 Mbps")
+    COMMUNICATION_HAS("LAN 10/100 Mbps", "LAN 10/100/1000 Mbps")
   )
 };

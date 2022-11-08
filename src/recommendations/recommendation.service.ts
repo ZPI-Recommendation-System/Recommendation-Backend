@@ -9,24 +9,35 @@ import { AND } from "../rules/predicates/relation.predicate";
 
 @Injectable()
 export class RecommendationService {
-
   constructor(private laptopService: LaptopsServices) {
   }
 
-  async processRecommendation(form: FormDto, limit = 0): Promise<ModelEntity[] | any> {
+  async processRecommendation(
+    form: FormDto,
+    limit = 0
+  ): Promise<{ models: ModelEntity[]; weakFilters: WeakFilter[] }> {
     const strongFilter = this.getStrongFilters(form);
     const weakFilters = this.getWeakFilters(form);
-    return {
-      strong: strongFilter,
-      weak: weakFilters,
-      finalResult: this.combineStrongAndWeak(strongFilter, weakFilters)
-    };
+    // return {
+    //   strong: strongFilter,
+    //   weak: weakFilters,
+    //   finalResult: this.combineStrongAndWeak(strongFilter, weakFilters)
+    // };
     // return strongFilter;
-    return this.laptopService.findLaptop(this.combineStrongAndWeak(strongFilter, weakFilters), limit);
+    const filters = this.combineStrongAndWeak(strongFilter, weakFilters);
+    return this.laptopService
+      .findLaptop(filters, limit)
+      .then((it) => {
+        return { models: it, weakFilters: weakFilters, comboFilters: filters };
+      });
   }
 
   combineStrongAndWeak(strongFilters: Predicate, weakFilters: WeakFilter[]) {
-    return AND([strongFilters, AND(weakFilters.map(it => it.filterPredicate))]);
+    // strongFilters,
+    return AND([
+      strongFilters,
+      AND(weakFilters.map((it) => it.filterPredicate))
+    ]);
   }
 
   getStrongFilters(form: FormDto): Predicate {
