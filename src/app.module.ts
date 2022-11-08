@@ -6,6 +6,7 @@ import { LaptopsModule } from "./laptops/laptops.module";
 import { UsersModule } from "./users/user.module";
 import { RecommendationModule } from "./recommendations/recommendation.module";
 import { ConfigModule } from "@nestjs/config";
+import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
 
 @Module({
   imports: [
@@ -22,7 +23,8 @@ import { ConfigModule } from "@nestjs/config";
     }),
     LaptopsModule,
     UsersModule,
-    RecommendationModule
+    RecommendationModule,
+    LaptopsCrudModule
   ],
   controllers: [AppController],
   providers: [AppService]
