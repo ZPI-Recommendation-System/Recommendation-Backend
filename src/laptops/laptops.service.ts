@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
-import { FindOptionsWhere, In, Repository } from "typeorm";
+import { FindOptionsWhere, In, Like, Repository } from "typeorm";
 import { OfferEntity } from "./entity/offer.entity";
 
 @Injectable()
@@ -128,5 +128,29 @@ export class LaptopsServices {
           });
         });
     }
+  }
+
+  async findPrice(model: ModelEntity): Promise<number> {
+    return this.offersRepo.findBy({ model: model }).then((it) => {
+      return (
+        it.map((it) => it.offerPrice).reduce((a, b) => a + b, 0) / it.length ||
+        0
+      );
+    });
+  }
+
+  searchLaptop(search: string, query: string, limit: number) {
+    console.log(search);
+    return this.laptopsRepo
+      .find({
+        where: { name: Like("%" + search + "%") },
+        relations: this.getRelations(query.split(",")),
+        take: limit
+      })
+      .then((items) => {
+        return items.map((item) => {
+          return this.filterItem(item, query.split(","));
+        });
+      });
   }
 }

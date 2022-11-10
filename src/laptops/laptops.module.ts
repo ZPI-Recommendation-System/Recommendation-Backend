@@ -14,6 +14,7 @@ import { LaptopsServices } from "./laptops.service";
 import { LaptopsController } from "./laptops.controller";
 import { ModelImgEntity } from "./entity/model-img.entity";
 import { DriveTypeEntity } from "./entity/drive-type.entity";
+import { UsersModule } from "../users/user.module";
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { DriveTypeEntity } from "./entity/drive-type.entity";
       ModelImgEntity,
       DriveTypeEntity
     ]),
+    UsersModule
   ],
   providers: [LaptopsServices],
   controllers: [LaptopsController],

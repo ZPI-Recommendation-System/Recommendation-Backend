@@ -9,7 +9,8 @@ import { LocalStrategy } from "./guards/local.strategy";
 @Module({
   imports: [TypeOrmModule.forFeature([UserEntity]), PassportModule],
   controllers: [UserController],
-  providers: [UserService, LocalStrategy]
+  providers: [UserService, LocalStrategy],
+  exports: [UserService]
 })
 export class UsersModule {
 }

@@ -8,7 +8,7 @@ export class LaptopsController {
   constructor(private laptopService: LaptopsServices) {
   }
 
-  @Get(":id")
+  @Get("get/:id")
   getLaptop(
     @Param("id") id: string,
     @Query("query") displayQuery = ""
@@ -51,5 +51,21 @@ export class LaptopsController {
       .catch((it) => {
         throw new BadRequestException(it);
       });
+  }
+
+  @Get("search")
+  async searchLaptop(
+    @Query("query") query = "",
+    @Query("search") search = "",
+    @Query("limit") limit = 10
+  ) {
+    return this.laptopService.searchLaptop(search, query, limit).then(it => {
+      return {
+        search: search,
+        query: query,
+        limit: limit,
+        result: it
+      };
+    });
   }
 }
