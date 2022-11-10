@@ -10,6 +10,7 @@ const UsageRules = {
   "Aplikacje biurowe i internet": AND([
     CPU_FREQ(MoreThan(2.5)),
     RAM_SIZE(MoreThan(4))
+    // CPU_CORES(MoreThan(4))
   ])
 };
 
