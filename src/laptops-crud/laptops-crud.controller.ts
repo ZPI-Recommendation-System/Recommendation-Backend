@@ -2,8 +2,10 @@ import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/commo
 import { LaptopsCrudService } from "./laptops-crud.service";
 import { UpdateLaptopsCrudDto } from "./dto/update-laptops-crud.dto";
 import { ModelEntity } from "../laptops/entity/model.entity";
+import { AdminAccess } from "../users/auth.decorators";
 
 @Controller("laptops-crud")
+@AdminAccess
 export class LaptopsCrudController {
   constructor(private readonly laptopsCrudService: LaptopsCrudService) {
   }
