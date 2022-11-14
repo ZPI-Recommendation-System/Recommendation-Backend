@@ -74,6 +74,11 @@ export class UserService implements OnModuleInit {
 
   }
 
+
+  async getAdmin(){
+    return this.userRepository.findOneBy({username: "admin"});
+  }
+
   async onModuleInit(): Promise<any> {
     if ((await this.userRepository.count()) == 0) {
       const entity = new UserEntity();

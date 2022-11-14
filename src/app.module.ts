@@ -9,10 +9,13 @@ import { ConfigModule } from "@nestjs/config";
 import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
 import { EntityManager } from "typeorm";
 import { TranslationsModule } from "./translations/translations.module";
+import { WebsocketsModule } from "./modules-connector/websockets.module";
+import { EventEmitterModule } from "@nestjs/event-emitter";
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
+    EventEmitterModule.forRoot(),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DB_HOST,
@@ -27,7 +30,8 @@ import { TranslationsModule } from "./translations/translations.module";
     UsersModule,
     RecommendationModule,
     LaptopsCrudModule,
-    TranslationsModule
+    TranslationsModule,
+    WebsocketsModule
   ],
   controllers: [AppController],
   providers: [AppService]

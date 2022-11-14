@@ -21,7 +21,7 @@ export class ScoreService {
 
   async scoreModel(form: FormDto, model: ModelEntity): Promise<ScoredModel> {
     const price = await this.getOfferPrice(model);
-    const scores = ScorersList.map((it) => it(form, model, price));
+    const scores = ScorersList.map((it) => it(form, model));
     const score = scores.reduce<number>(
       (prev, b) => prev + b.weight * b.score,
       0
