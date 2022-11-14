@@ -20,8 +20,8 @@ export class LaptopsServices {
     return this.laptopsRepo.find({
       take: limit,
       where: filter,
-      skip: limit * page
-      // relations: this.getRelations(["all"])
+      skip: limit * page,
+      relations: this.getRelations(["all"])
     });
   }
 
@@ -98,7 +98,8 @@ export class LaptopsServices {
       drives: isAll ? true : displayParams.includes("drives"),
       connections: isAll ? true : displayParams.includes("connections"),
       controls: isAll ? true : displayParams.includes("controls"),
-      images: isAll ? true : displayParams.includes("images")
+      images: isAll ? true : displayParams.includes("images"),
+      offers: true
     };
   }
 
