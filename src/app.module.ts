@@ -8,6 +8,7 @@ import { RecommendationModule } from "./recommendations/recommendation.module";
 import { ConfigModule } from "@nestjs/config";
 import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
 import { EntityManager } from "typeorm";
+import { TranslationsModule } from "./translations/translations.module";
 
 @Module({
   imports: [
@@ -25,7 +26,8 @@ import { EntityManager } from "typeorm";
     LaptopsModule,
     UsersModule,
     RecommendationModule,
-    LaptopsCrudModule
+    LaptopsCrudModule,
+    TranslationsModule
   ],
   controllers: [AppController],
   providers: [AppService]
