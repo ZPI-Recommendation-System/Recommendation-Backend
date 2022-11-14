@@ -15,7 +15,7 @@ export class RecommendationService {
   async processRecommendation(
     form: FormDto,
     limit = 0
-  ): Promise<{ models: ModelEntity[]; weakFilters: WeakFilter[] }> {
+  ): Promise<{ models: ModelEntity | any[]; weakFilters: WeakFilter[] }> {
     const strongFilter = this.getStrongFilters(form);
     const weakFilters = this.getWeakFilters(form);
     // return {
@@ -25,11 +25,14 @@ export class RecommendationService {
     // };
     // return strongFilter;
     const filters = this.combineStrongAndWeak(strongFilter, weakFilters);
-    return this.laptopService
-      .findLaptop(filters, limit, 0)
-      .then((it) => {
-        return { models: it, weakFilters: weakFilters, comboFilters: filters };
-      });
+    return this.laptopService.findLaptop(filters, limit, 0).then((it) => {
+      return {
+        models: it.map(model => {
+          model.offers.length > 0 ? model["price"] = model.offers[0].offerPrice : model["price"] = undefined;
+          return model;
+        }), weakFilters: weakFilters, comboFilters: filters
+      };
+    });
   }
 
   combineStrongAndWeak(strongFilters: Predicate, weakFilters: WeakFilter[]) {
