@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { LaptopsCrudService } from "./laptops-crud.service";
 import { UpdateLaptopsCrudDto } from "./dto/update-laptops-crud.dto";
 import { ModelEntity } from "../laptops/entity/model.entity";
@@ -16,22 +16,22 @@ export class LaptopsCrudController {
   }
 
   @Get()
-  findAll() {
-    return this.laptopsCrudService.findAll();
+  findAll(@Query("limit") limit: number = 20, @Query("page") page: number = 0) {
+    return this.laptopsCrudService.findAll(limit, page);
   }
 
   @Get(":id")
   findOne(@Param("id") id: string) {
-    return this.laptopsCrudService.findOne(+id);
+    return this.laptopsCrudService.findOne(id);
   }
 
   @Patch(":id")
   update(@Param("id") id: string, @Body() updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
-    return this.laptopsCrudService.update(+id, updateLaptopsCrudDto);
+    return this.laptopsCrudService.update(id, updateLaptopsCrudDto);
   }
 
   @Delete(":id")
   remove(@Param("id") id: string) {
-    return this.laptopsCrudService.remove(+id);
+    return this.laptopsCrudService.remove(id);
   }
 }
