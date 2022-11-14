@@ -18,6 +18,6 @@ export class ProcessorEntity {
   @Column("float", { nullable: true })
   frequency: number;
 
-  @ManyToOne(() => BenchmarkEntity, { nullable: true })
+  @ManyToOne(() => BenchmarkEntity, { nullable: true, eager: true })
   benchmark: BenchmarkEntity;
 }

@@ -99,7 +99,6 @@ export class LaptopsServices {
       connections: isAll ? true : displayParams.includes("connections"),
       controls: isAll ? true : displayParams.includes("controls"),
       images: isAll ? true : displayParams.includes("images"),
-      offers: true
     };
   }
 
