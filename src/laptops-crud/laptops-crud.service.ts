@@ -9,22 +9,22 @@ export class LaptopsCrudService {
   }
 
   create(createLaptopsCrudDto: ModelEntity) {
-    return "This action adds a new laptopsCrud";
+    return this.laptopService.addNewLaptop(createLaptopsCrudDto);
   }
 
-  findAll() {
-    return `This action returns all laptopsCrud`;
+  findAll(limit: number, page: number) {
+    return this.laptopService.getListLaptops(limit, page, undefined, ["all"]);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} laptopsCrud`;
+  findOne(id: string) {
+    return this.laptopService.getLaptop(id, ["all"]);
   }
 
-  update(id: number, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
-    return `This action updates a #${id} laptopsCrud`;
+  update(id: string, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
+    return this.laptopService.updateLaptop(id, updateLaptopsCrudDto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} laptopsCrud`;
+  remove(id: string) {
+    return this.laptopService.removeLaptop(id);
   }
 }

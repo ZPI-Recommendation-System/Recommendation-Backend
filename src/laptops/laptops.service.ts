@@ -3,6 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { OfferEntity } from "./entity/offer.entity";
+import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
 
 @Injectable()
 export class LaptopsServices {
@@ -173,5 +174,17 @@ export class LaptopsServices {
     //       return this.filterItem(item, query.split(","));
     //     });
     //   });
+  }
+
+  async updateLaptop(id: string, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
+    return this.laptopsRepo.update({ id: id }, updateLaptopsCrudDto);
+  }
+
+  removeLaptop(id: string) {
+    return this.laptopsRepo.delete({ id: id });
+  }
+
+  addNewLaptop(createLaptopsCrudDto: ModelEntity) {
+    return this.laptopsRepo.save(createLaptopsCrudDto);
   }
 }
