@@ -27,10 +27,7 @@ export class RecommendationService {
     const filters = this.combineStrongAndWeak(strongFilter, weakFilters);
     return this.laptopService.findLaptop(filters, limit, 0).then((it) => {
       return {
-        models: it.map(model => {
-          model.offers.length > 0 ? model["price"] = model.offers[0].offerPrice : model["price"] = undefined;
-          return model;
-        }), weakFilters: weakFilters, comboFilters: filters
+        models: it, weakFilters: weakFilters, comboFilters: filters
       };
     });
   }
