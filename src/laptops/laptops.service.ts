@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
-import { FindOptionsWhere, In, Like, Repository } from "typeorm";
+import { FindOptionsWhere, In, Repository } from "typeorm";
 import { OfferEntity } from "./entity/offer.entity";
 
 @Injectable()
@@ -12,10 +12,15 @@ export class LaptopsServices {
   ) {
   }
 
-  findLaptop(filter: FindOptionsWhere<ModelEntity>, limit: number) {
+  findLaptop(
+    filter: FindOptionsWhere<ModelEntity>,
+    limit: number,
+    page: number
+  ) {
     return this.laptopsRepo.find({
       take: limit,
       where: filter,
+      skip: limit * page
       // relations: this.getRelations(["all"])
     });
   }
@@ -99,15 +104,17 @@ export class LaptopsServices {
 
   async getListLaptops(
     limit = 10,
+    page = 0,
     partialFilter: Partial<ModelEntity> = {},
     displayParams: string[] = [],
-    idsString = ""
+    ids: string[] = []
   ) {
-    console.log(idsString);
-    if (idsString == "") {
+    console.log(ids);
+    if (ids.length == 0) {
       return await this.laptopsRepo
         .find({
           take: limit,
+          skip: limit * page,
           where: partialFilter,
           relations: this.getRelations(displayParams)
         })
@@ -119,7 +126,9 @@ export class LaptopsServices {
     } else {
       return await this.laptopsRepo
         .find({
-          where: { id: In(idsString.split(",")) },
+          take: limit,
+          skip: limit * page,
+          where: { id: In(ids) },
           relations: this.getRelations(displayParams)
         })
         .then((items) => {
@@ -139,18 +148,30 @@ export class LaptopsServices {
     });
   }
 
-  searchLaptop(search: string, query: string, limit: number) {
+  searchLaptop(search: string, query: string, limit: number, page: number) {
     console.log(search);
+
     return this.laptopsRepo
-      .find({
-        where: { name: Like("%" + search + "%") },
-        relations: this.getRelations(query.split(",")),
-        take: limit
-      })
-      .then((items) => {
-        return items.map((item) => {
-          return this.filterItem(item, query.split(","));
-        });
+      .query(
+        "SELECT id, SIMILARITY(NAME, $1) AS \"similarity\" FROM PUBLIC.model_entity ORDER BY \"similarity\" DESC LIMIT $2 OFFSET $3;",
+        [search, limit, limit * page]
+      )
+      .then((it) => {
+        return this.getListLaptops(limit, page, undefined, query.split(","), it.map((it) => it["id"]));
       });
+
+    // return this.getListLaptops(limit, page, undefined, query.split(','), []);
+    // this.laptopsRepo
+    //   .find({
+    //     where: { name: Like("%" + search + "%") },
+    //     relations: this.getRelations(query.split(",")),
+    //     take: limit,
+    //     skip: limit*page
+    //   })
+    //   .then((items) => {
+    //     return items.map((item) => {
+    //       return this.filterItem(item, query.split(","));
+    //     });
+    //   });
   }
 }
