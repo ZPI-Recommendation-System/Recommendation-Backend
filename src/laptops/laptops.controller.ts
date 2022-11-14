@@ -35,11 +35,18 @@ export class LaptopsController {
   getLaptops(
     @Query("query") query = "",
     @Query("limit") limit = 10,
+    @Query("page") page = 0,
     @Query("filter") partialFilter: Partial<LaptopsModule> = undefined,
     @Query("ids") ids = ""
   ): Promise<GetLaptopsDto> {
     return this.laptopService
-      .getListLaptops(limit, partialFilter, query.split(","), ids)
+      .getListLaptops(
+        limit,
+        page,
+        partialFilter,
+        query.split(","),
+        ids.trim() == "" ? [] : ids.split(",")
+      )
       .then((it) => {
         return {
           limit: limit,
@@ -57,15 +64,18 @@ export class LaptopsController {
   async searchLaptop(
     @Query("query") query = "",
     @Query("search") search = "",
-    @Query("limit") limit = 10
+    @Query("limit") limit = 10,
+    @Query("page") page = 0
   ) {
-    return this.laptopService.searchLaptop(search, query, limit).then(it => {
-      return {
-        search: search,
-        query: query,
-        limit: limit,
-        result: it
-      };
-    });
+    return this.laptopService
+      .searchLaptop(search, query, limit, page)
+      .then((it) => {
+        return {
+          search: search,
+          query: query,
+          limit: limit,
+          result: it
+        };
+      });
   }
 }

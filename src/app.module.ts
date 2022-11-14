@@ -1,4 +1,4 @@
-import { Module } from "@nestjs/common";
+import { Module, OnModuleInit } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -7,6 +7,7 @@ import { UsersModule } from "./users/user.module";
 import { RecommendationModule } from "./recommendations/recommendation.module";
 import { ConfigModule } from "@nestjs/config";
 import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
+import { EntityManager } from "typeorm";
 
 @Module({
   imports: [
@@ -29,5 +30,11 @@ import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule {
+export class AppModule implements OnModuleInit {
+  constructor(private entityManager: EntityManager) {
+  }
+
+  async onModuleInit() {
+    return this.entityManager.query("CREATE EXTENSION IF NOT EXISTS pg_trgm;");
+  }
 }

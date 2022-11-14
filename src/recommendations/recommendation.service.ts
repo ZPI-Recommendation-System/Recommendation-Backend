@@ -26,7 +26,7 @@ export class RecommendationService {
     // return strongFilter;
     const filters = this.combineStrongAndWeak(strongFilter, weakFilters);
     return this.laptopService
-      .findLaptop(filters, limit)
+      .findLaptop(filters, limit, 0)
       .then((it) => {
         return { models: it, weakFilters: weakFilters, comboFilters: filters };
       });
