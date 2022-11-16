@@ -5,9 +5,7 @@ export class PartialModelEntity extends PartialType(ModelEntity) {
 }
 
 export class GetLaptopsDto {
-  limit: number;
   query: string;
-  filter: PartialModelEntity;
   items: PartialModelEntity[];
 }
 
@@ -15,4 +13,10 @@ export class GetLaptopDto {
   uuid: string;
   query: string;
   result: PartialModelEntity;
+}
+
+export class GetLaptopsAPIDto {
+  query = '';
+  page = 0;
+  ids = '';
 }
