@@ -1,25 +1,24 @@
 import { BadRequestException, Controller, Get, Param, Query } from "@nestjs/common";
 import { LaptopsServices } from "./laptops.service";
-import { LaptopsModule } from "./laptops.module";
-import { GetLaptopDto, GetLaptopsDto } from "./laptops.dto";
+import { GetLaptopDto, GetLaptopsAPIDto, GetLaptopsDto } from "./laptops.dto";
 
-@Controller("laptops")
+
+@Controller('laptops')
 export class LaptopsController {
-  constructor(private laptopService: LaptopsServices) {
-  }
+  constructor(private laptopService: LaptopsServices) {}
 
-  @Get("get/:id")
+  @Get('get/:id')
   getLaptop(
-    @Param("id") id: string,
-    @Query("query") displayQuery = ""
+    @Param('id') id: string,
+    @Query('query') displayQuery = '',
   ): Promise<GetLaptopDto> {
     return this.laptopService
-      .getLaptop(id, displayQuery.split(","))
+      .getLaptop(id, displayQuery.split(','))
       .then((it) => {
         return {
           uuid: id,
-          query: "test",
-          result: it
+          query: 'test',
+          result: it,
         };
       })
       .catch((it) => {
@@ -32,27 +31,27 @@ export class LaptopsController {
   }
 
   @Get()
-  getLaptops(
-    @Query("query") query = "",
-    @Query("limit") limit = 10,
-    @Query("page") page = 0,
-    @Query("filter") partialFilter: Partial<LaptopsModule> = undefined,
-    @Query("ids") ids = ""
-  ): Promise<GetLaptopsDto> {
+  async getLaptops(@Query() dto: GetLaptopsAPIDto): Promise<GetLaptopsDto> {
+    if (dto.ids === undefined || dto.ids?.trim() === '') {
+      return {
+        query: dto.query,
+        items: [],
+      };
+    }
+    const splited = dto.ids.split(',');
     return this.laptopService
       .getListLaptops(
-        limit,
-        page,
-        partialFilter,
-        query.split(","),
-        ids.trim() == "" ? [] : ids.split(",")
+        splited.length,
+        0,
+        undefined,
+        dto.query.split(','),
+        splited
       )
       .then((it) => {
         return {
-          limit: limit,
-          query: query,
-          filter: partialFilter,
-          items: it
+          page: dto.page,
+          query: dto.query,
+          items: it,
         };
       })
       .catch((it) => {
@@ -60,12 +59,12 @@ export class LaptopsController {
       });
   }
 
-  @Get("search")
+  @Get('search')
   async searchLaptop(
-    @Query("query") query = "",
-    @Query("search") search = "",
-    @Query("limit") limit = 10,
-    @Query("page") page = 0
+    @Query('query') query = '',
+    @Query('search') search = '',
+    @Query('limit') limit = 10,
+    @Query('page') page = 0,
   ) {
     return this.laptopService
       .searchLaptop(search, query, limit, page)
@@ -74,7 +73,8 @@ export class LaptopsController {
           search: search,
           query: query,
           limit: limit,
-          result: it
+          result: it,
+          page: page
         };
       });
   }
