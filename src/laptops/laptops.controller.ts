@@ -2,7 +2,6 @@ import { BadRequestException, Controller, Get, Param, Query } from "@nestjs/comm
 import { LaptopsServices } from "./laptops.service";
 import { GetLaptopDto, GetLaptopsAPIDto, GetLaptopsDto } from "./laptops.dto";
 
-
 @Controller('laptops')
 export class LaptopsController {
   constructor(private laptopService: LaptopsServices) {}
@@ -30,6 +29,25 @@ export class LaptopsController {
     // });
   }
 
+  @Get('all')
+  async getAllLaptops(
+    @Query('limit') limit = 10,
+    @Query('page') page = 0,
+    @Query('debug_offers') debugOffers = 'false',
+  ) {
+    const displa = ['all'];
+    if (debugOffers === 'true') displa.push('offers');
+    return this.laptopService
+      .getListLaptops(limit, page, undefined, displa, [])
+      .then((response) => {
+        return {
+          limit: limit,
+          page: page,
+          items: response,
+        };
+      });
+  }
+
   @Get()
   async getLaptops(@Query() dto: GetLaptopsAPIDto): Promise<GetLaptopsDto> {
     if (dto.ids === undefined || dto.ids?.trim() === '') {
@@ -45,7 +63,7 @@ export class LaptopsController {
         0,
         undefined,
         dto.query.split(','),
-        splited
+        splited,
       )
       .then((it) => {
         return {
@@ -74,7 +92,7 @@ export class LaptopsController {
           query: query,
           limit: limit,
           result: it,
-          page: page
+          page: page,
         };
       });
   }

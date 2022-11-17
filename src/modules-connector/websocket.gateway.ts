@@ -93,8 +93,6 @@ export class WebsocketGateway
     @MessageBody() data: ScrapperWorkStatusDto,
     @ConnectedSocket() client: Socket,
   ) {
-    this.logger.debug(SCRAPPER_WORK_STATUS);
-
     if (this.authClient(client)) {
       return this.websocketService.workStatusUpgrade(data) ? 'ok' : 'invalid';
     } else {
