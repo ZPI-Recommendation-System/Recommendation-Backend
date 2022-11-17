@@ -16,7 +16,9 @@ import { AppLoggerMiddleware } from "./app-logger.middleware";
 @Module({
   imports: [
     ConfigModule.forRoot(),
-    EventEmitterModule.forRoot(),
+    EventEmitterModule.forRoot({
+      ignoreErrors: true
+    }),
     TypeOrmModule.forRoot({
       type: "postgres",
       host: process.env.DB_HOST,

@@ -19,12 +19,14 @@ export interface ScrapperAuthRequestDto {
 // }
 
 export type WorkStatus =
+  | 'waiting_for_auth'
   | 'authorised'
   | 'running'
   | 'finished'
   | 'error'
   | 'cancelled'
-  | 'ready';
+  | 'ready'
+  | 'unknown';
 
 export interface ScrapperWorkStatusDto {
   workStatus: WorkStatus;

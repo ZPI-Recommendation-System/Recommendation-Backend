@@ -50,9 +50,9 @@ export class WebsocketGateway
   timeout = 10000;
 
   @OnEvent(SCRAPPER_AUTH_REQUEST)
-  async scrapperAuthRequest(): Promise<string> {
+  async scrapperAuthRequest(): Promise<any> {
     if (this.requestWrapper.authStatus == 'in_progress') {
-      return 'in_progress';
+      return { status: 'in_progress', auth_link: '' };
     }
     if (this.connectedScrapper) {
       this.requestWrapper.authStatus = 'in_progress';
@@ -78,13 +78,13 @@ export class WebsocketGateway
           return this.requestWrapper.authResponse;
         } else {
           this.requestWrapper.authStatus = 'cancelled';
-          return 'no_response';
+          return { status: 'no_response', auth_link: '' };
         }
       } else {
-        return 'request_error';
+        return { status: 'request_error', auth_link: '' };
       }
     } else {
-      return 'disconnected';
+      return { status: 'disconnected', auth_link: '' };
     }
   }
 
@@ -93,12 +93,22 @@ export class WebsocketGateway
     @MessageBody() data: ScrapperWorkStatusDto,
     @ConnectedSocket() client: Socket,
   ) {
-    if (this.authClient(client)) {
-      return this.websocketService.workStatusUpgrade(data) ? 'ok' : 'invalid';
-    } else {
-      this.logger.warn("Can't authorise the client! Disconnecting...");
-      client.disconnect();
-      return 'unauthorised';
+    try {
+      if (this.authClient(client)) {
+        return this.websocketService.workStatusUpgrade(data) ? 'ok' : 'invalid';
+      } else {
+        this.logger.warn("Can't authorise the client! Disconnecting...");
+        client.disconnect();
+        return 'unauthorised';
+      }
+    } catch (e) {
+      this.logger.error(
+        'Error while processing event ' +
+          SCRAPPER_WORK_STATUS +
+          ' With body ' +
+          JSON.stringify(data),
+      );
+      this.logger.error(e);
     }
   }
 

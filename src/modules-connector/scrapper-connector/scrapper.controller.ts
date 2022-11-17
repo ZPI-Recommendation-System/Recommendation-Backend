@@ -7,21 +7,18 @@ import { ScrapperService } from "./scrapper.service";
 export class ScrapperController {
   constructor(private scrapperService: ScrapperService) {}
 
-  @Get('authlink')
-  getAuthLink() {
-    return {
-      status: 'ok',
-      link: this.scrapperService.getAuthLink(),
-    };
-  }
-
   @Post('request')
   requestAuthLink() {
     return this.scrapperService.requestAuthLink().then((it) => {
       return {
         status: 'ok',
-        authlink: it,
+        response: it,
       };
     });
+  }
+
+  @Get('status')
+  getStatus() {
+    return this.scrapperService.getScrapperStatus();
   }
 }
