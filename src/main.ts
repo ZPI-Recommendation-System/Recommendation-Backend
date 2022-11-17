@@ -3,8 +3,11 @@ import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, {
+    logger: ['log', 'debug', 'error', 'verbose', 'warn'],
+  });
   app.enableCors({ origin: "*" });
+
 
   const config = new DocumentBuilder()
     .setTitle("ZPI Recommendation API docs")

@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
 import { FindOptionsWhere, In, Repository } from "typeorm";
@@ -7,6 +7,7 @@ import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dt
 
 @Injectable()
 export class LaptopsServices {
+  private logger = new Logger(LaptopsServices.name);
   constructor(
     @InjectRepository(ModelEntity) private laptopsRepo: Repository<ModelEntity>,
     @InjectRepository(OfferEntity) private offersRepo: Repository<OfferEntity>,
@@ -17,6 +18,9 @@ export class LaptopsServices {
     limit: number,
     page: number,
   ) {
+    if (limit > 50 || limit < 1) {
+      limit = 10
+    }
     return this.laptopsRepo.find({
       take: limit,
       where: filter,
@@ -99,7 +103,7 @@ export class LaptopsServices {
       connections: isAll ? true : displayParams.includes('connections'),
       controls: isAll ? true : displayParams.includes('controls'),
       images: isAll ? true : displayParams.includes('images'),
-      offers: displayParams.includes("offers")
+      offers: displayParams.includes('offers'),
     };
   }
 
