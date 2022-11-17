@@ -99,6 +99,7 @@ export class LaptopsServices {
       connections: isAll ? true : displayParams.includes('connections'),
       controls: isAll ? true : displayParams.includes('controls'),
       images: isAll ? true : displayParams.includes('images'),
+      offers: displayParams.includes("offers")
     };
   }
 
@@ -109,7 +110,6 @@ export class LaptopsServices {
     displayParams: string[] = [],
     ids: string[] = [],
   ) {
-    console.log(ids);
     if (ids.length == 0) {
       return await this.laptopsRepo
         .find({
