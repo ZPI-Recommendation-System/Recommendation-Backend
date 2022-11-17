@@ -1,28 +1,20 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { SCRAPPER_AUTH_REQUEST, ScrapperAuthRequestDto } from "../websocket.events";
-import { EventEmitter2 } from "@nestjs/event-emitter";
+import { SCRAPPER_AUTH_REQUEST, SCRAPPER_WORK_STATUS, ScrapperWorkStatusDto, WorkStatus } from "../websocket.events";
+import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
+
+export interface ScrapperStatus {
+  status: WorkStatus;
+  lines: string[];
+  lastPayload: any;
+  lastTimeEstimate: number;
+}
 
 @Injectable()
 export class ScrapperService {
-  currentScraperAuthRequest: ScrapperAuthRequestDto;
   logger = new Logger(ScrapperService.name);
-  constructor(private eventEmmiter: EventEmitter2) {}
+  private scrapperStatus: ScrapperStatus = {status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: []};
 
-  // @OnEvent(SCRAPPER_AUTH_REQUEST)
-  // scrapperAuthRequest(data: ScrapperAuthRequestDto) {
-  //   this.logger.debug('Scrapper data request');
-  //   this.logger.debug(data);
-  //   if (data.authLink && data.timeout !== undefined) {
-  //     this.currentScraperAuthRequest = data;
-  //     return true;
-  //   }
-  //   return false;
-  // }
-
-  getAuthLink() {
-    return !!this.currentScraperAuthRequest
-      ? this.currentScraperAuthRequest.authLink
-      : 'unknown';
+  constructor(private eventEmmiter: EventEmitter2) {
   }
 
   async requestAuthLink(): Promise<string> {
@@ -30,8 +22,34 @@ export class ScrapperService {
       if (it) {
         return it[0];
       } else {
-        return 'event_error';
+        return { status: 'event_error', auth_link: '' };
       }
     });
+  }
+
+  getScrapperStatus() {
+    return !!this.scrapperStatus ? this.scrapperStatus : { status: 'unknown' };
+  }
+
+  @OnEvent(SCRAPPER_WORK_STATUS)
+  async scrapperWorkStatusEvent(scrapperDto: ScrapperWorkStatusDto) {
+    try {
+      if (scrapperDto.workStatus === 'waiting_for_auth' || scrapperDto.workStatus === 'authorised') {
+        this.scrapperStatus = {
+          status: 'authorised',
+          lines: [],
+          lastPayload: undefined,
+          lastTimeEstimate: undefined,
+        };
+      }
+      this.scrapperStatus.status = scrapperDto.workStatus;
+      this.scrapperStatus.lines = this.scrapperStatus.lines.concat(
+        scrapperDto.logs,
+      );
+      this.scrapperStatus.lastPayload = scrapperDto.payload;
+      this.scrapperStatus.lastTimeEstimate = scrapperDto.estimatedTime;
+    } catch (e) {
+      this.logger.error(e)
+    }
   }
 }

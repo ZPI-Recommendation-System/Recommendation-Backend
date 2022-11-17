@@ -19,7 +19,7 @@ export class LaptopsServices {
     page: number,
   ) {
     if (limit > 50 || limit < 1) {
-      limit = 10
+      limit = 50
     }
     return this.laptopsRepo.find({
       take: limit,
