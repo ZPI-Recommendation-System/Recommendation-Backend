@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from "@nestjs/common";
 import { AppController } from "./app.controller";
 import { AppService } from "./app.service";
 import { TypeOrmModule } from "@nestjs/typeorm";
@@ -11,6 +11,7 @@ import { EntityManager } from "typeorm";
 import { TranslationsModule } from "./translations/translations.module";
 import { WebsocketsModule } from "./modules-connector/websockets.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
+import { AppLoggerMiddleware } from "./app-logger.middleware";
 
 @Module({
   imports: [
@@ -24,7 +25,8 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
       password: process.env.DB_PASS,
       database: process.env.DB_DB,
       synchronize: true,
-      autoLoadEntities: true
+      autoLoadEntities: true,
+      // logging: "all"
     }),
     LaptopsModule,
     UsersModule,
@@ -36,11 +38,15 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
   controllers: [AppController],
   providers: [AppService]
 })
-export class AppModule implements OnModuleInit {
+export class AppModule implements NestModule, OnModuleInit {
   constructor(private entityManager: EntityManager) {
   }
 
   async onModuleInit() {
     return this.entityManager.query("CREATE EXTENSION IF NOT EXISTS pg_trgm;");
+  }
+
+  configure(consumer: MiddlewareConsumer): any {
+    consumer.apply(AppLoggerMiddleware).forRoutes("*")
   }
 }

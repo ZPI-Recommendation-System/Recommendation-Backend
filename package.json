@@ -33,6 +33,7 @@
     "@nestjs/websockets": "^9.2.0",
     "@types/bcrypt": "^5.0.0",
     "bcrypt": "^5.0.1",
+    "morgan": "^1.10.0",
     "passport": "^0.6.0",
     "passport-local": "^1.0.0",
     "pg": "^8.8.0",

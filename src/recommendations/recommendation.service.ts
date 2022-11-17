@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { FormDto } from "./dto/form.dto";
 import { ModelEntity } from "../laptops/entity/model.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
@@ -9,12 +9,13 @@ import { AND } from "../rules/predicates/relation.predicate";
 
 @Injectable()
 export class RecommendationService {
+  private logger = new Logger(RecommendationService.name);
   constructor(private laptopService: LaptopsServices) {
   }
 
   async processRecommendation(
     form: FormDto,
-    limit = 0
+    limit = 50
   ): Promise<{ models: ModelEntity | any[]; weakFilters: WeakFilter[] }> {
     const strongFilter = this.getStrongFilters(form);
     const weakFilters = this.getWeakFilters(form);
