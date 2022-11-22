@@ -17,7 +17,7 @@ export class LaptopsServices {
     page: number,
   ) {
     if (limit > 50 || limit < 1) {
-      limit = 50
+      limit = 50;
     }
     return this.laptopsRepo.find({
       take: limit,
@@ -49,7 +49,7 @@ export class LaptopsServices {
       .then(async (item) => {
         if (item !== undefined) {
           // if (displayParams.includes('offers'))
-            // item.offers = await this.offersRepo.findBy({ model: item });
+          // item.offers = await this.offersRepo.findBy({ model: item });
           return this.filterItem(item, displayParams);
         }
         return item;
@@ -101,7 +101,6 @@ export class LaptopsServices {
       connections: isAll ? true : displayParams.includes('connections'),
       controls: isAll ? true : displayParams.includes('controls'),
       images: isAll ? true : displayParams.includes('images'),
-      offers: displayParams.includes('offers'),
     };
   }
 
