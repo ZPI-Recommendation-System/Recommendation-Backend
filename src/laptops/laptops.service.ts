@@ -2,7 +2,6 @@ import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
 import { FindOptionsWhere, In, Repository } from "typeorm";
-import { OfferEntity } from "./entity/offer.entity";
 import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
 
 @Injectable()
@@ -10,7 +9,6 @@ export class LaptopsServices {
   private logger = new Logger(LaptopsServices.name);
   constructor(
     @InjectRepository(ModelEntity) private laptopsRepo: Repository<ModelEntity>,
-    @InjectRepository(OfferEntity) private offersRepo: Repository<OfferEntity>,
   ) {}
 
   findLaptop(
@@ -50,8 +48,8 @@ export class LaptopsServices {
       })
       .then(async (item) => {
         if (item !== undefined) {
-          if (displayParams.includes('offers'))
-            item.offers = await this.offersRepo.findBy({ model: item });
+          // if (displayParams.includes('offers'))
+            // item.offers = await this.offersRepo.findBy({ model: item });
           return this.filterItem(item, displayParams);
         }
         return item;
@@ -86,9 +84,9 @@ export class LaptopsServices {
     return a;
   };
 
-  async massGetOffers(items: []) {
-    return this.offersRepo.findBy({ model: In(items) });
-  }
+  // async massGetOffers(items: []) {
+  //   return this.offersRepo.findBy({ model: In(items) });
+  // }
 
   getRelations(displayParams: string[]): any {
     const isAll = displayParams.includes('all');
@@ -144,12 +142,13 @@ export class LaptopsServices {
   }
 
   async findPrice(model: ModelEntity): Promise<number> {
-    return this.offersRepo.findBy({ model: model }).then((it) => {
-      return (
-        it.map((it) => it.offerPrice).reduce((a, b) => a + b, 0) / it.length ||
-        0
-      );
-    });
+    return model.price;
+    // return this.offersRepo.findBy({ model: model }).then((it) => {
+    //   return (
+    //     it.map((it) => it.offerPrice).reduce((a, b) => a + b, 0) / it.length ||
+    //     0
+    //   );
+    // });
   }
 
   searchLaptop(search: string, query: string, limit: number, page: number) {
