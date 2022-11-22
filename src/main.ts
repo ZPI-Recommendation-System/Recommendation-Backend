@@ -2,6 +2,12 @@ import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 
+
+export const handleException = (error: any) => {
+  console.log(error)
+  console.trace(error);
+}
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'debug', 'error', 'verbose', 'warn'],
