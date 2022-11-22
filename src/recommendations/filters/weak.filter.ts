@@ -14,16 +14,16 @@ export class WeakFilter {
 
 const WeakFilterCreator = (
   name: string,
-  predicate: PredicateWithCustom
+  predicate: PredicateWithCustom,
 ): WeakFilter => {
   if (name in weakFilterWeights) {
     return {
       ruleName: name,
       weight: weakFilterWeights[name],
-      filterPredicate: predicate
+      filterPredicate: predicate,
     };
   }
-  throw new Error("Name not found" + name);
+  throw new Error('Name not found' + name);
 };
 
 export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
@@ -45,15 +45,18 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
   if (form.batteryRunTime) {
     filters.push(
       WeakFilterCreator(
-        "battery_run_time",
-        BATTERY_RUN_TIME_MORE(form.batteryRunTime)
-      )
+        'battery_run_time',
+        BATTERY_RUN_TIME_MORE(form.batteryRunTime),
+      ),
     );
   }
   if (form.preferredScreenSizes && form.preferredScreenSizes.length > 0) {
-    filters.push(
-      WeakFilterCreator("screen_size", SCREEN_SIZE(form.preferredScreenSizes))
-    );
+    const filtered = form.preferredScreenSizes.filter((it) => !isNaN(+it));
+    //TODO: Obsłużyć <10 i >17. Na to trzeba zrobić custom SQL Query
+    filters.push(WeakFilterCreator('screen_size', SCREEN_SIZE(filtered)));
+    // if(form.preferredScreenSizes.includes("<10")){
+    //   // filters.push(WeakFilterCreator('screen_size_comparator'))
+    // }
   }
   return filters;
 };

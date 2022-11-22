@@ -27,7 +27,7 @@ import { StatTrackerModule } from "./stat-tracker/stat-tracker.module";
       username: process.env.DB_USER,
       password: process.env.DB_PASS,
       database: process.env.DB_DB,
-      synchronize: true,
+      // synchronize: true,
       autoLoadEntities: true,
       // logging: "all"
     }),

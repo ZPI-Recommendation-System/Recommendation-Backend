@@ -33,10 +33,15 @@ export class ScoreService {
     };
   }
 
-  generateLaptopScores(
+  async generateLaptopScores(
     form: FormDto,
     models: ModelEntity[]
-  ): Promise<ScoredModel>[] {
-    return models.map((it) => this.scoreModel(form, it));
+  ): Promise<ScoredModel[]> {
+    const scoredModels = [];
+    for(let model of models){
+      const value = await this.scoreModel(form, model);
+      scoredModels.push(value)
+    }
+    return scoredModels;
   }
 }
