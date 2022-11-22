@@ -8,7 +8,6 @@ import { ConnectionEntity } from "./entity/connection.entity";
 import { ControlEntity } from "./entity/control.entity";
 import { CommunicationEntity } from "./entity/communication.entity";
 import { MultimediaEntity } from "./entity/multimedia.entity";
-import { OfferEntity } from "./entity/offer.entity";
 import { BenchmarkEntity } from "./entity/benchmark.entity";
 import { LaptopsServices } from "./laptops.service";
 import { LaptopsController } from "./laptops.controller";
@@ -27,7 +26,6 @@ import { UsersModule } from "../users/user.module";
       ControlEntity,
       MultimediaEntity,
       CommunicationEntity,
-      OfferEntity,
       BenchmarkEntity,
       ModelImgEntity,
       DriveTypeEntity

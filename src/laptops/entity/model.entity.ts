@@ -1,4 +1,4 @@
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, PrimaryColumn } from "typeorm";
 import { ProcessorEntity } from "./processor.entity";
 import { ScreenEntity } from "./screen.entity";
 import { GraphicsEntity } from "./graphics.entity";
@@ -6,9 +6,10 @@ import { ConnectionEntity } from "./connection.entity";
 import { MultimediaEntity } from "./multimedia.entity";
 import { CommunicationEntity } from "./communication.entity";
 import { ControlEntity } from "./control.entity";
-import { OfferEntity } from "./offer.entity";
 import { DriveTypeEntity } from "./drive-type.entity";
 import { ModelImgEntity } from "./model-img.entity";
+
+export type PriceSource = "allegro" | "generated" | "unknown"
 
 @Entity()
 export class ModelEntity {
@@ -86,6 +87,12 @@ export class ModelEntity {
   @Column({ nullable: true })
   hddSpeed: number;
 
+  @Column("float")
+  price: number;
+
+  @Column({default: "unknown"})
+  priceSource: PriceSource;
+
   @ManyToOne(() => GraphicsEntity)
   @JoinColumn()
   graphics: GraphicsEntity;
@@ -105,10 +112,6 @@ export class ModelEntity {
   @ManyToMany(() => ControlEntity, { nullable: true })
   @JoinTable()
   controls: ControlEntity[];
-
-  @OneToMany(() => OfferEntity, (offer) => offer.model, { nullable: true })
-  offers: OfferEntity[];
-
 
   @ManyToMany(() => DriveTypeEntity, { nullable: true })
   @JoinTable()
