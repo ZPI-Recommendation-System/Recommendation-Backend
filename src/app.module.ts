@@ -12,6 +12,7 @@ import { TranslationsModule } from "./translations/translations.module";
 import { WebsocketsModule } from "./modules-connector/websockets.module";
 import { EventEmitterModule } from "@nestjs/event-emitter";
 import { AppLoggerMiddleware } from "./app-logger.middleware";
+import { StatTrackerModule } from "./stat-tracker/stat-tracker.module";
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { AppLoggerMiddleware } from "./app-logger.middleware";
     RecommendationModule,
     LaptopsCrudModule,
     TranslationsModule,
-    WebsocketsModule
+    WebsocketsModule,
+    StatTrackerModule
   ],
   controllers: [AppController],
   providers: [AppService]
