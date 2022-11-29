@@ -65,4 +65,9 @@ export class LaptopsController {
         };
       });
   }
+
+  @Get('benchmarkstats')
+  getBenchmarkStats(){
+    return this.laptopService.getBenchmarkStats()
+  }
 }
