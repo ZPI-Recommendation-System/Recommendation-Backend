@@ -3,6 +3,7 @@ import { StatTrackerEntity } from "./stat-tracker.entity";
 import { Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { handleException } from "../main";
+import { StatTrackerDto } from "./stat-tracker.dto";
 
 @Injectable()
 export class StatTrackerService {
@@ -11,12 +12,13 @@ export class StatTrackerService {
     private statTrackerRepo: Repository<StatTrackerEntity>,
   ) {}
 
-  async postStat(statTracker: StatTrackerEntity): Promise<string> {
+  async postStat(statTracker: StatTrackerDto): Promise<string> {
     if (statTracker && statTracker.eventType) {
-      statTracker.id = undefined;
-      statTracker.timestamp = new Date();
+      const entity = statTracker as StatTrackerEntity
+      entity.id = undefined;
+      entity.timestamp = new Date();
       return this.statTrackerRepo
-        .save(statTracker)
+        .save(entity)
         .then(() => 'ok')
         .catch((error) => {
           handleException(error);

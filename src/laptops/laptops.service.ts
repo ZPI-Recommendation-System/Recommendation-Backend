@@ -140,19 +140,7 @@ export class LaptopsServices {
     }
   }
 
-  async findPrice(model: ModelEntity): Promise<number> {
-    return model.price;
-    // return this.offersRepo.findBy({ model: model }).then((it) => {
-    //   return (
-    //     it.map((it) => it.offerPrice).reduce((a, b) => a + b, 0) / it.length ||
-    //     0
-    //   );
-    // });
-  }
-
-  searchLaptop(search: string, query: string, limit: number, page: number) {
-    console.log(search);
-
+  searchLaptop(search: string, query: string[], limit: number, page: number) {
     return this.laptopsRepo
       .query(
         'SELECT id, SIMILARITY(NAME, $1) AS "similarity" FROM PUBLIC.model_entity ORDER BY "similarity" DESC LIMIT $2 OFFSET $3;',
@@ -163,7 +151,7 @@ export class LaptopsServices {
           limit,
           page,
           undefined,
-          query.split(','),
+          query,
           it.map((it) => it['id']),
         );
       });

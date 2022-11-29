@@ -1,48 +1,20 @@
-import { BadRequestException, Controller, Get, Param, Query } from "@nestjs/common";
+import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { LaptopsServices } from "./laptops.service";
-import { GetLaptopDto, GetLaptopsAPIDto, GetLaptopsDto } from "./laptops.dto";
+import { GetLaptopsAPIDto, GetLaptopsDto, LaptopSearchDto, Pagination } from "./laptops.dto";
 
 @Controller('laptops')
 export class LaptopsController {
   constructor(private laptopService: LaptopsServices) {}
 
-  @Get('get/:id')
-  getLaptop(
-    @Param('id') id: string,
-    @Query('query') displayQuery = '',
-  ): Promise<GetLaptopDto> {
-    return this.laptopService
-      .getLaptop(id, displayQuery.split(','))
-      .then((it) => {
-        return {
-          uuid: id,
-          query: 'test',
-          result: it,
-        };
-      })
-      .catch((it) => {
-        throw new BadRequestException(it);
-      });
-    // .then((it) => {
-    //   if (it === undefined) return it;
-    //   return it;
-    // });
-  }
-
   @Get('all')
-  async getAllLaptops(
-    @Query('limit') limit = 10,
-    @Query('page') page = 0,
-    @Query('debug_offers') debugOffers = 'false',
-  ) {
+  async getAllLaptops(@Query() pagination: Pagination) {
     const displa = ['all'];
-    if (debugOffers === 'true') displa.push('offers');
     return this.laptopService
-      .getListLaptops(limit, page, undefined, displa, [])
+      .getListLaptops(pagination.limit, pagination.page, undefined, displa, [])
       .then((response) => {
         return {
-          limit: limit,
-          page: page,
+          limit: pagination.limit,
+          page: pagination.page,
           items: response,
         };
       });
@@ -50,24 +22,18 @@ export class LaptopsController {
 
   @Get()
   async getLaptops(@Query() dto: GetLaptopsAPIDto): Promise<GetLaptopsDto> {
-    if (dto.ids === undefined || dto.ids?.trim() === '') {
+    if (!dto.ids || dto.ids.length == 0) {
       return {
         query: dto.query,
         items: [],
       };
     }
-    const splited = dto.ids.split(',');
+    const splited = dto.ids;
     return this.laptopService
-      .getListLaptops(
-        splited.length,
-        0,
-        undefined,
-        dto.query.split(','),
-        splited,
-      )
+      .getListLaptops(splited.length, 0, undefined, dto.query, splited)
       .then((it) => {
         return {
-          page: dto.page,
+          ids: dto.ids,
           query: dto.query,
           items: it,
         };
@@ -79,20 +45,23 @@ export class LaptopsController {
 
   @Get('search')
   async searchLaptop(
-    @Query('query') query = '',
-    @Query('search') search = '',
-    @Query('limit') limit = 10,
-    @Query('page') page = 0,
+    @Query() pagination: Pagination,
+    @Query() laptopSearch: LaptopSearchDto,
   ) {
     return this.laptopService
-      .searchLaptop(search, query, limit, page)
+      .searchLaptop(
+        laptopSearch.search,
+        laptopSearch.query,
+        pagination.limit,
+        pagination.page,
+      )
       .then((it) => {
         return {
-          search: search,
-          query: query,
-          limit: limit,
-          result: it,
-          page: page,
+          search: laptopSearch.search,
+          query: laptopSearch.query,
+          limit: pagination.limit,
+          items: it,
+          page: pagination.page,
         };
       });
   }
