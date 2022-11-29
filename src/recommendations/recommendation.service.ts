@@ -16,6 +16,12 @@ export class RecommendationService {
     private scoreService: ScoreService,
   ) {}
 
+  async countLaptopsWithMaxPrice(usageType: string, maxPrice: number){
+    const strong = this.getStrongFilters({usageType: usageType})
+    const strongPrice = this.getStrongFilters({usageType: usageType, maxPricePLN: maxPrice})
+    return this.laptopService.count(strong, strongPrice);
+  }
+
   async processRecommendation(
     form: FormDto,
     limit = 50,
@@ -51,7 +57,7 @@ export class RecommendationService {
     ]);
   }
 
-  getStrongFilters(form: FormDto): Predicate {
+  getStrongFilters(form: Partial<FormDto>): Predicate {
     return getStrongFilter(form);
   }
 
