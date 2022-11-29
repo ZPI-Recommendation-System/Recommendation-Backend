@@ -26,7 +26,7 @@ export type ScoreFunction = (
 ) => ScoreWithWeight;
 
 const ScoreScreenSize: ScoreFunction = (form: FormDto, model: ModelEntity) => {
-  if (form.preferredScreenSizes.length === 0) {
+  if (!form.preferredScreenSizes || form.preferredScreenSizes.length === 0) {
     //TODO: Should we prefer other parameter? For example based on usage if screen should be certain size?
     return { weight: NO_IMPORTANCE, score: NO_SCORE };
   } else {

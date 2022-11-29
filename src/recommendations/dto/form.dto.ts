@@ -74,6 +74,7 @@ export type ScreenSize =
   | ">17";
 
 export class FormDto {
+  
   ramInUnits: number;
   @ApiProperty({
     description:
