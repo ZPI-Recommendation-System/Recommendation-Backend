@@ -1,7 +1,6 @@
 import { ScorersList } from "./score-generator";
 import { Injectable } from "@nestjs/common";
 import { ModelEntity } from "../../laptops/entity/model.entity";
-import { LaptopsServices } from "../../laptops/laptops.service";
 import { FormDto } from "../dto/form.dto";
 
 export interface ScoredModel {
@@ -12,35 +11,28 @@ export interface ScoredModel {
 
 @Injectable()
 export class ScoreService {
-  constructor(private laptopsService: LaptopsServices) {
-  }
-
-  async getOfferPrice(model: ModelEntity) {
-    return await this.laptopsService.findPrice(model);
-  }
-
-  async scoreModel(form: FormDto, model: ModelEntity): Promise<ScoredModel> {
-    const price = await this.getOfferPrice(model);
+  scoreModel(form: FormDto, model: ModelEntity): ScoredModel {
+    const price = model.price;
     const scores = ScorersList.map((it) => it(form, model));
     const score = scores.reduce<number>(
       (prev, b) => prev + b.weight * b.score,
-      0
+      0,
     );
     return {
       model: model,
       score: score,
-      price: price
+      price: price,
     };
   }
 
   async generateLaptopScores(
     form: FormDto,
-    models: ModelEntity[]
+    models: ModelEntity[],
   ): Promise<ScoredModel[]> {
     const scoredModels = [];
-    for(let model of models){
+    for (const model of models) {
       const value = await this.scoreModel(form, model);
-      scoredModels.push(value)
+      scoredModels.push(value);
     }
     return scoredModels;
   }

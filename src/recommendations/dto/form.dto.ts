@@ -33,65 +33,101 @@
  */
 
 import { ApiProperty } from "@nestjs/swagger";
+import { ArrayContains, IsBoolean, IsNotEmpty, IsNumberString, Max, Min, ValidateNested } from "class-validator";
+import { Type } from "class-transformer";
 
+//TODO: Zero jest niewiadomą/Brak filtra
 export class ScreenPreferences {
   @ApiProperty()
+  @IsBoolean()
   touchScreen: boolean;
   @ApiProperty()
+  @IsBoolean()
   HDMI: boolean;
+  @IsBoolean()
   @ApiProperty()
   otherVideoConnectors: boolean;
 }
 
 export class InternetPreferences {
   @ApiProperty()
+  @IsBoolean()
   simCard: boolean;
   @ApiProperty()
+  @IsBoolean()
   lanPort: boolean;
 }
 
 export class DataPreferences {
   @ApiProperty()
+  @IsBoolean()
   diskDrive: boolean;
   @ApiProperty()
+  @IsBoolean()
   sdCardReader: boolean;
 }
 
-export type UsageType =
-  | "Aplikacje biurowe i internet"
-  | "Gry"
-  | "Renderowanie Filmów";
+const UsageTypes = [
+  'Aplikacje biurowe i internet',
+  'Gry',
+  'Renderowanie Filmów',
+];
 
-export type ScreenSize =
-  | "<10"
-  | "10"
-  | "11"
-  | "11.5"
-  | "13"
-  | "15"
-  | "16"
-  | "17"
-  | ">17";
+const ScreenSizes = ['<10', '10', '11', '11.5', '13', '15', '16', '17', '>17'];
+
+export type UsageType = typeof UsageTypes[number];
+
+export type ScreenSize = typeof ScreenSizes[number];
 
 export class FormDto {
-  
+  @IsNumberString()
+  @Min(0)
+  @Max(16)
   ramInUnits: number;
+
   @ApiProperty({
     description:
       "'Aplikacje biurowe i internet'\n" +
       "  | 'Gry'\n" +
-      "  | 'Renderowanie Filmów'"
+      "  | 'Renderowanie Filmów'",
   })
+  @IsNotEmpty()
+  @ArrayContains(UsageTypes)
   usageType: UsageType; //Usage type
+  @IsNumberString()
+  @Min(0)
   maxPricePLN: number;
+
   @ApiProperty({
     description:
-      "<10 " + "10 " + "11 " + "11.5 " + "13 " + "15 " + "16 " + "17 " + ">17"
+      '<10 ' + '10 ' + '11 ' + '11.5 ' + '13 ' + '15 ' + '16 ' + '17 ' + '>17',
   })
+  @IsNotEmpty()
+  @ArrayContains(ScreenSizes)
   preferredScreenSizes: ScreenSize[];
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => ScreenPreferences)
   screenPreferences: ScreenPreferences;
+
+  @IsNumberString()
+  @Min(1)
+  @Max(20)
   batteryRunTime: number;
-  minDiscSize = 0;
+
+  @IsNumberString()
+  @Min(100)
+  @Max(2000)
+  minDiscSize: number;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => InternetPreferences)
   internetPreferences: InternetPreferences;
+
+  @IsNotEmpty()
+  @ValidateNested()
+  @Type(() => DataPreferences)
   dataPreferences: DataPreferences;
 }

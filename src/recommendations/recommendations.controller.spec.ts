@@ -26,6 +26,7 @@ describe('Recommendations Controller', () => {
       [RecommendationService, ScoreService, LaptopsServices],
     );
     recommendationController = module.get(RecommendationController);
+
     // console.log(moduleRepository);
   });
 
@@ -46,11 +47,26 @@ describe('Recommendations Controller', () => {
       ).toHaveReturned(),
     ]);
 
-    describe("Mass test of all allowed combinations", ()=>{
-
-
-
-    })
-
+    describe('Mass test of all allowed combinations', () => {
+      const ramUnits = [0, 1, 2, 3, 4, 5];
+      const usageType = [
+        'Aplikacje biurowe i internet',
+        'Gry',
+        'Renderowanie Filmów',
+      ];
+      const maxPricePLN = [0, 500, 1000, 1500, 2000, 2500, 3000];
+      const preferredScreenSizes = [
+        [undefined],
+        ['<10'],
+        ['10'],
+        ['11'],
+        ['11.5'],
+        ['13'],
+        ['15'],
+        ['16'],
+        ['17'],
+        ['>17'],
+      ];
+    });
   });
 });

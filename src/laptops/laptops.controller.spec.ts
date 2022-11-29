@@ -1,24 +1,11 @@
-import { Test, TestingModule } from "@nestjs/testing";
-import { TypeOrmModule } from "@nestjs/typeorm";
+import { TestingModule } from "@nestjs/testing";
 import { LaptopsController } from "./laptops.controller";
 import { LaptopsServices } from "./laptops.service";
-import { ModelEntity } from "./entity/model.entity";
-import { ProcessorEntity } from "./entity/processor.entity";
-import { ScreenEntity } from "./entity/screen.entity";
-import { GraphicsEntity } from "./entity/graphics.entity";
-import { ConnectionEntity } from "./entity/connection.entity";
-import { ControlEntity } from "./entity/control.entity";
-import { MultimediaEntity } from "./entity/multimedia.entity";
-import { CommunicationEntity } from "./entity/communication.entity";
-import { BenchmarkEntity } from "./entity/benchmark.entity";
-import { ModelImgEntity } from "./entity/model-img.entity";
-import { DriveTypeEntity } from "./entity/drive-type.entity";
-import { Repository } from "typeorm";
+import { CreateLaptopsTestingModule } from "../tests/sample_laptops.db.spec";
 
 describe('LaptopsController', () => {
   let laptopController: LaptopsController;
   let module: TestingModule;
-  let moduleRepository: Repository<ModelEntity>;
   // const generateLaptops = (modelRepo: Repository<ModelEntity>) => {
   //   const model: ModelEntity = {
   //     id: randomStringGenerator(),
@@ -31,65 +18,26 @@ describe('LaptopsController', () => {
   // }
 
   beforeAll(async () => {
-    module = await Test.createTestingModule({
-      imports: [
-        TypeOrmModule.forRoot({
-          type: 'sqlite',
-          database: ':memory:',
-          dropSchema: true,
-          synchronize: true,
-          entities: [
-            ModelEntity,
-            ProcessorEntity,
-            ScreenEntity,
-            GraphicsEntity,
-            ConnectionEntity,
-            ControlEntity,
-            MultimediaEntity,
-            CommunicationEntity,
-            BenchmarkEntity,
-            ModelImgEntity,
-            DriveTypeEntity,
-          ],
-        }),
-        TypeOrmModule.forFeature([
-          ModelEntity,
-          ProcessorEntity,
-          ScreenEntity,
-          GraphicsEntity,
-          ConnectionEntity,
-          ControlEntity,
-          MultimediaEntity,
-          CommunicationEntity,
-          BenchmarkEntity,
-          ModelImgEntity,
-          DriveTypeEntity,
-        ]),
-      ],
-      providers: [LaptopsServices],
-      controllers: [LaptopsController],
-    }).compile();
+    module = await CreateLaptopsTestingModule([LaptopsController],[LaptopsServices])
     laptopController = await module.get(LaptopsController);
     // console.log(moduleRepository);
   });
 
   describe('root', () => {
-    it('Should have 20 elements in sample list', async () => {
-      expect(await moduleRepository.count()).toBe(20);
-      // expect(appController.getHello()).toBe('Hello World!');
-    });
     it('Controller should return 5 elements', async () => {
       expect(
-        await laptopController.getAllLaptops(5).then((it) => it.items.length),
+        await laptopController.getAllLaptops({
+          page: 0,
+          limit: 5
+        }).then((it) => it.items.length),
       ).toBe(5);
     });
     it('Controller should return 2 laptop with specific name', async () => {
       expect(
         await laptopController
           .getLaptops({
-            ids: '003bb070-d6d8-4c9d-a7b4-26f515c1ad4c,003d0482-5807-4589-808e-9674490aba58',
-            page: 0,
-            query: '',
+            ids: ['003bb070-d6d8-4c9d-a7b4-26f515c1ad4c', '003d0482-5807-4589-808e-9674490aba58'],
+            query: [],
           })
           .then((it) => it.items.map((it) => it.name)),
       ).toStrictEqual([
