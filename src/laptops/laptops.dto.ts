@@ -17,10 +17,10 @@ export class LaptopSearchDto {
 export class Pagination {
   @Min(1)
   @Max(50)
-  limit = 10;
+  limit: number = 10;
 
   @Min(0)
-  page = 0;
+  page: number = 0;
 }
 
 export class GetLaptopsDto {

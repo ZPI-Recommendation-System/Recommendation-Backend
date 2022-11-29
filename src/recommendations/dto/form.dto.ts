@@ -33,7 +33,7 @@
  */
 
 import { ApiProperty } from "@nestjs/swagger";
-import { ArrayContains, IsBoolean, IsNotEmpty, IsNumberString, Max, Min, ValidateNested } from "class-validator";
+import { ArrayUnique, IsBoolean, IsIn, IsNotEmpty, IsNumber, Max, Min, ValidateNested } from "class-validator";
 import { Type } from "class-transformer";
 
 //TODO: Zero jest niewiadomą/Brak filtra
@@ -80,7 +80,7 @@ export type UsageType = typeof UsageTypes[number];
 export type ScreenSize = typeof ScreenSizes[number];
 
 export class FormDto {
-  @IsNumberString()
+  @IsNumber()
   @Min(0)
   @Max(16)
   ramInUnits: number;
@@ -92,9 +92,9 @@ export class FormDto {
       "  | 'Renderowanie Filmów'",
   })
   @IsNotEmpty()
-  @ArrayContains(UsageTypes)
+  @IsIn(UsageTypes)
   usageType: UsageType; //Usage type
-  @IsNumberString()
+  @IsNumber()
   @Min(0)
   maxPricePLN: number;
 
@@ -103,7 +103,8 @@ export class FormDto {
       '<10 ' + '10 ' + '11 ' + '11.5 ' + '13 ' + '15 ' + '16 ' + '17 ' + '>17',
   })
   @IsNotEmpty()
-  @ArrayContains(ScreenSizes)
+  @ArrayUnique()
+  @IsIn(ScreenSizes, {each: true})
   preferredScreenSizes: ScreenSize[];
 
   @IsNotEmpty()
@@ -111,12 +112,12 @@ export class FormDto {
   @Type(() => ScreenPreferences)
   screenPreferences: ScreenPreferences;
 
-  @IsNumberString()
+  @IsNumber()
   @Min(1)
   @Max(20)
   batteryRunTime: number;
 
-  @IsNumberString()
+  @IsNumber()
   @Min(100)
   @Max(2000)
   minDiscSize: number;
