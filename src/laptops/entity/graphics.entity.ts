@@ -15,6 +15,6 @@ export class GraphicsEntity {
   @Column({ nullable: true })
   graphicsCardVRam: string;
 
-  @ManyToOne(() => BenchmarkEntity, { eager: true })
+  @ManyToOne(() => BenchmarkEntity, { eager: true, cascade: ["insert"] })
   benchmark: BenchmarkEntity;
 }

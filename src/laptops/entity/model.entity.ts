@@ -9,7 +9,7 @@ import { ControlEntity } from "./control.entity";
 import { DriveTypeEntity } from "./drive-type.entity";
 import { ModelImgEntity } from "./model-img.entity";
 
-export type PriceSource = "allegro" | "generated" | "unknown"
+export type PriceSource = 'allegro' | 'generated' | 'unknown';
 
 @Entity()
 export class ModelEntity {
@@ -28,39 +28,39 @@ export class ModelEntity {
   @Column({ nullable: true })
   producentCode: string;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   batterySizeWH: number;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   batterySizeMAH: number;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   batteryTime: number;
 
   @Column({ nullable: true })
   color: string;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   width: number;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   length: number;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   depth: number;
 
-  @Column({ nullable: true, type: "float" })
+  @Column({ nullable: true, type: 'float' })
   weight: number;
 
-  @ManyToOne(() => ProcessorEntity)
+  @ManyToOne(() => ProcessorEntity, { cascade: ['insert'] })
   @JoinColumn()
   processor: ProcessorEntity;
 
-  @ManyToOne(() => ScreenEntity)
+  @ManyToOne(() => ScreenEntity, { cascade: ['insert'] })
   @JoinColumn()
   screen: ScreenEntity;
 
-  @Column("float")
+  @Column('float')
   ramAmount: number;
 
   @Column({ nullable: true })
@@ -87,37 +87,40 @@ export class ModelEntity {
   @Column({ nullable: true })
   hddSpeed: number;
 
-  @Column("float")
+  @Column('float')
   price: number;
 
-  @Column({default: "unknown"})
+  @Column({ default: 'unknown' })
   priceSource: PriceSource;
 
-  @ManyToOne(() => GraphicsEntity)
+  @ManyToOne(() => GraphicsEntity, { cascade: ['insert'] })
   @JoinColumn()
   graphics: GraphicsEntity;
 
-  @ManyToMany(() => ConnectionEntity, { nullable: true })
+  @ManyToMany(() => ConnectionEntity, { nullable: true, cascade: ['insert'] })
   @JoinTable()
   connections: ConnectionEntity[];
 
-  @ManyToMany(() => MultimediaEntity, { nullable: true })
+  @ManyToMany(() => MultimediaEntity, { nullable: true, cascade: ['insert'] })
   @JoinTable()
   multimedia: MultimediaEntity[];
 
-  @ManyToMany(() => CommunicationEntity, { nullable: true })
+  @ManyToMany(() => CommunicationEntity, {
+    nullable: true,
+    cascade: ['insert'],
+  })
   @JoinTable()
   communications: CommunicationEntity[];
 
-  @ManyToMany(() => ControlEntity, { nullable: true })
+  @ManyToMany(() => ControlEntity, { nullable: true, cascade: ['insert'] })
   @JoinTable()
   controls: ControlEntity[];
 
-  @ManyToMany(() => DriveTypeEntity, { nullable: true })
+  @ManyToMany(() => DriveTypeEntity, { nullable: true, cascade: ['insert'] })
   @JoinTable()
   drives: DriveTypeEntity[];
 
-  @ManyToMany(() => ModelImgEntity)
+  @ManyToMany(() => ModelImgEntity, { cascade: ['insert'] })
   @JoinTable()
   images: ModelImgEntity[];
 }
