@@ -67,6 +67,9 @@ describe('Recommendations Controller', () => {
         ['17'],
         ['>17'],
       ];
+      const screenPreferences = {
+        hdmi: [true, false],
+      };
     });
   });
 });

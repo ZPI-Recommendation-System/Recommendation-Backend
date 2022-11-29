@@ -16,16 +16,19 @@ export class RecommendationService {
     private scoreService: ScoreService,
   ) {}
 
-  async countLaptopsWithMaxPrice(usageType: string, maxPrice: number){
-    const strong = this.getStrongFilters({usageType: usageType})
-    const strongPrice = this.getStrongFilters({usageType: usageType, maxPricePLN: maxPrice})
+  async countLaptopsWithMaxPrice(usageType: string, maxPrice: number) {
+    const strong = this.getStrongFilters({ usageType: usageType });
+    const strongPrice = this.getStrongFilters({
+      usageType: usageType,
+      maxPricePLN: maxPrice,
+    });
     return this.laptopService.count(strong, strongPrice);
   }
 
   async processRecommendation(
     form: FormDto,
     limit = 50,
-  ): Promise<{ models: ModelEntity | any[]; weakFilters: WeakFilter[] }> {
+  ): Promise<{ items: ModelEntity | any[]; weakFilters: any[] }[]> {
     const strongFilter = this.getStrongFilters(form);
     const weakFilters = this.getWeakFilters(form);
     // return {
@@ -41,11 +44,15 @@ export class RecommendationService {
         return await this.scoreService.generateLaptopScores(form, it);
       })
       .then((it) => {
-        return {
-          models: it.map(it=>it.model),
-          weakFilters: weakFilters,
-          comboFilters: filters,
-        };
+        return [
+          {
+            items: it.map((it) => it.model),
+            weakFilters: weakFilters.map((it) => {
+              return it.ruleName;
+            }),
+            // comboFilters: filters,
+          },
+        ];
       });
   }
 

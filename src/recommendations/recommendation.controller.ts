@@ -17,10 +17,8 @@ export class RecommendationController {
       .then((it) => {
         return {
           status: 'ok',
-          length: it.models.length,
-          items: it.models,
-          weakFilters: it.weakFilters,
-          comboFilters: it['comboFilters'],
+          length: it.length,
+          result: it
         };
       });
 
