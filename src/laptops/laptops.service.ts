@@ -3,12 +3,14 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "./entity/model.entity";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
+import { BenchmarkEntity } from "./entity/benchmark.entity";
 
 @Injectable()
 export class LaptopsServices {
   private logger = new Logger(LaptopsServices.name);
   constructor(
     @InjectRepository(ModelEntity) private laptopsRepo: Repository<ModelEntity>,
+    @InjectRepository(BenchmarkEntity) private benchmarkRepo: Repository<BenchmarkEntity>,
   ) {}
 
   findLaptop(
@@ -181,5 +183,9 @@ export class LaptopsServices {
 
   addNewLaptop(createLaptopsCrudDto: ModelEntity) {
     return this.laptopsRepo.save(createLaptopsCrudDto);
+  }
+
+  getBenchmarkStats() {
+    return this.benchmarkRepo.query("SELECT \"type\", MAX(\"benchmark\"), MIN(\"benchmark\") FROM PUBLIC.benchmark_entity GROUP BY \"type\"")
   }
 }
