@@ -67,7 +67,7 @@ export class DataPreferences {
   sdCardReader: boolean;
 }
 
-const UsageTypes = [
+export const UsageTypes = [
   'Aplikacje biurowe i internet',
   'Gry',
   'Renderowanie Filmów',
