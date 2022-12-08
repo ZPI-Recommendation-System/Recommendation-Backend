@@ -1,5 +1,5 @@
 import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { FormDto } from "../recommendations/dto/form.dto";
+import { FormDto } from "../../recommendations/dto/form.dto";
 import { IsIn, IsNotEmpty, ValidateNested } from "class-validator";
 
 const EventTypes = [

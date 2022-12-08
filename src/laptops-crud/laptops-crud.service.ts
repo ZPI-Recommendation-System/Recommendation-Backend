@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { UpdateLaptopsCrudDto } from "./dto/update-laptops-crud.dto";
 import { LaptopsServices } from "../laptops/laptops.service";
-import { ModelEntity } from "../laptops/entity/model.entity";
+import { ModelEntity } from "../db/entities/model.entity";
 
 @Injectable()
 export class LaptopsCrudService {

@@ -1,9 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { ModelEntity } from "./entity/model.entity";
+import { ModelEntity } from "../db/entities/model.entity";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
-import { BenchmarkEntity } from "./entity/benchmark.entity";
+import { BenchmarkEntity } from "../db/entities/benchmark.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { FormDto } from "./dto/form.dto";
-import { ModelEntity } from "../laptops/entity/model.entity";
+import { ModelEntity } from "../db/entities/model.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
 import { getInternalWeakFilters, WeakFilter } from "./filters/weak.filter";
 import { getStrongFilter } from "./filters/strong.filter";

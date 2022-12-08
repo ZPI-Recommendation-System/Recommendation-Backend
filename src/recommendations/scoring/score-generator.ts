@@ -1,5 +1,5 @@
 import { FormDto } from "../dto/form.dto";
-import { ModelEntity } from "../../laptops/entity/model.entity";
+import { ModelEntity } from "../../db/entities/model.entity";
 
 const HIGH_SCORE = 100;
 const MEDIUM_HIGH_SCORE = 75;

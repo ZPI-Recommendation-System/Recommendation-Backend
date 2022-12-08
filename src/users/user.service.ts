@@ -1,10 +1,10 @@
 import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
-import { UserEntity } from "./entity/user.entity";
+import { UserEntity } from "../db/entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import bcrypt from "bcrypt";
 import { randomStringGenerator } from "@nestjs/common/utils/random-string-generator.util";
-import { Role } from "./entity/role.enum";
+import { Role } from "../db/entities/role.enum";
 
 export interface LoggedInUser {
   userId: number;

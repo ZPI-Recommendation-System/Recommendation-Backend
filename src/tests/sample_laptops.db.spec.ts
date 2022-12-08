@@ -1,18 +1,18 @@
 import { Test } from "@nestjs/testing";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ScreenEntity } from "../laptops/entity/screen.entity";
-import { GraphicsEntity } from "../laptops/entity/graphics.entity";
-import { ConnectionEntity } from "../laptops/entity/connection.entity";
-import { ControlEntity } from "../laptops/entity/control.entity";
-import { MultimediaEntity } from "../laptops/entity/multimedia.entity";
-import { CommunicationEntity } from "../laptops/entity/communication.entity";
-import { BenchmarkEntity } from "../laptops/entity/benchmark.entity";
-import { DriveTypeEntity } from "../laptops/entity/drive-type.entity";
+import { ScreenEntity } from "../db/entities/screen.entity";
+import { GraphicsEntity } from "../db/entities/graphics.entity";
+import { ConnectionEntity } from "../db/entities/connection.entity";
+import { ControlEntity } from "../db/entities/control.entity";
+import { MultimediaEntity } from "../db/entities/multimedia.entity";
+import { CommunicationEntity } from "../db/entities/communication.entity";
+import { BenchmarkEntity } from "../db/entities/benchmark.entity";
+import { DriveTypeEntity } from "../db/entities/drive-type.entity";
 import { Type } from "@nestjs/common/interfaces/type.interface";
-import { ModelImgEntity } from "../laptops/entity/model-img.entity";
+import { ModelImgEntity } from "../db/entities/model-img.entity";
 import { Repository } from "typeorm";
-import { ModelEntity } from "../laptops/entity/model.entity";
-import { ProcessorEntity } from "../laptops/entity/processor.entity";
+import { ModelEntity } from "../db/entities/model.entity";
+import { ProcessorEntity } from "../db/entities/processor.entity";
 
 export const CreateLaptopsTestingModule = async (
   controllers: Type<any>[],

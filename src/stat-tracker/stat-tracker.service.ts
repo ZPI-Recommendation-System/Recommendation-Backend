@@ -1,5 +1,5 @@
 import { InjectRepository } from "@nestjs/typeorm";
-import { StatTrackerEntity } from "./stat-tracker.entity";
+import { StatTrackerEntity } from "../db/entities/stat-tracker.entity";
 import { Repository } from "typeorm";
 import { Injectable } from "@nestjs/common";
 import { handleException } from "../main";
