@@ -2,6 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { UpdateLaptopsCrudDto } from "./dto/update-laptops-crud.dto";
 import { LaptopsServices } from "../laptops/laptops.service";
 import { ModelEntity } from "../db/entities/model.entity";
+import { SortingDto } from "../laptops/laptops.dto";
 
 @Injectable()
 export class LaptopsCrudService {
@@ -13,7 +14,7 @@ export class LaptopsCrudService {
   }
 
   findAll(limit: number, page: number) {
-    return this.laptopService.getListLaptops(limit, page, undefined, ["all"]);
+    return this.laptopService.getListLaptops(limit, page, undefined, ["all"],[], new SortingDto());
   }
 
   findOne(id: string) {

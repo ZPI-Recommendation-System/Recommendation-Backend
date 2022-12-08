@@ -45,7 +45,7 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
   if (form.batteryRunTime) {
     filters.push(
       WeakFilterCreator(
-        'battery_run_time',
+        'Czas pracy na bateri',
         BATTERY_RUN_TIME_MORE(form.batteryRunTime),
       ),
     );
@@ -53,10 +53,11 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
   if (form.preferredScreenSizes && form.preferredScreenSizes.length > 0) {
     const filtered = form.preferredScreenSizes.filter((it) => !isNaN(+it));
     //TODO: Obsłużyć <10 i >17. Na to trzeba zrobić custom SQL Query
-    filters.push(WeakFilterCreator('screen_size', SCREEN_SIZE(filtered)));
-    // if(form.preferredScreenSizes.includes("<10")){
-    //   // filters.push(WeakFilterCreator('screen_size_comparator'))
-    // }
+    filters.push(WeakFilterCreator('Wielkość ekranu', SCREEN_SIZE(filtered.map(it=>(+it)))));
+    console.log(filters)
+    if(form.preferredScreenSizes.includes("<10")){
+      // filters.push(WeakFilterCreator('screen_size_comparator'))
+    }
   }
   return filters;
 };

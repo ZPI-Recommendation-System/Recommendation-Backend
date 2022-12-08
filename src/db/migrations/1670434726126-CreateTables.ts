@@ -1,6 +1,5 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
-import { ConfigService } from '@nestjs/config';
-import { config } from 'dotenv';
+import bcrypt from "bcrypt";
 
 // config();
 //
@@ -21,7 +20,7 @@ export class CreateTables1670434726126 implements MigrationInterface {
         await queryRunner.query(`CREATE TABLE "multimedia_entity" ("multimediaName" character varying NOT NULL, CONSTRAINT "PK_edf492d2f80ef4c7bd2c26b1c04" PRIMARY KEY ("multimediaName"))`);
         await queryRunner.query(`CREATE TABLE "model_entity" ("id" character varying NOT NULL, "name" character varying NOT NULL, "model" character varying NOT NULL, "type" character varying, "producentCode" character varying, "batterySizeWH" double precision, "batterySizeMAH" double precision, "batteryTime" double precision, "color" character varying, "width" double precision, "length" double precision, "depth" double precision, "weight" double precision, "ramAmount" double precision NOT NULL, "ramFrequency" integer, "ramNumberOfSlots" integer, "ramNumberOfFreeSlots" integer, "ramType" character varying, "ramMaxAmount" integer, "driveStorage" integer NOT NULL, "driveType" character varying, "hddSpeed" integer, "price" double precision NOT NULL, "priceSource" character varying NOT NULL DEFAULT 'unknown', "processorId" integer, "screenId" integer, "graphicsId" integer, CONSTRAINT "PK_042b93cee74ff493db04129d4f5" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "user_entity" ("id" SERIAL NOT NULL, "username" character varying NOT NULL, "email" character varying NOT NULL, "password" character varying NOT NULL, "role" character varying NOT NULL, "name" character varying NOT NULL, "surname" character varying NOT NULL, CONSTRAINT "PK_b54f8ea623b17094db7667d8206" PRIMARY KEY ("id"))`);
-        await queryRunner.query(`INSERT INTO user_entity (username, email, password, role, name, surname) VALUES('${process.env.ADMIN_USERNAM}', '${process.env.ADMIN_MAIL}', '${process.env.ADMIN_PASSWORD}', '${process.env.ADMIN_ROLE}', '${process.env.ADMIN_NAME}', '${process.env.ADMIN_SURNAME}')`);
+        await queryRunner.query(`INSERT INTO user_entity (username, email, password, role, name, surname) VALUES('${process.env.ADMIN_USERNAM}', '${process.env.ADMIN_MAIL}', '${bcrypt.hashSync(process.env.ADMIN_PASSWORD, 10)}', '${process.env.ADMIN_ROLE}', '${process.env.ADMIN_NAME}', '${process.env.ADMIN_SURNAME}')`);
         await queryRunner.query(`CREATE TABLE "stat_tracker_entity" ("id" SERIAL NOT NULL, "timestamp" TIMESTAMP NOT NULL, "eventType" character varying NOT NULL DEFAULT 'unknown', "laptopId" character varying, "formJson" text, "payload" text, CONSTRAINT "PK_02edee5762980d2e6d7dae160bc" PRIMARY KEY ("id"))`);
         await queryRunner.query(`CREATE TABLE "model_entity_connections_connection_entity" ("modelEntityId" character varying NOT NULL, "connectionEntityConnectionName" character varying NOT NULL, CONSTRAINT "PK_193bfcfca1138b95ffd8d8b883e" PRIMARY KEY ("modelEntityId", "connectionEntityConnectionName"))`);
         await queryRunner.query(`CREATE INDEX "IDX_ed3083ac7d4b87b102a3ac87fb" ON "model_entity_connections_connection_entity" ("modelEntityId") `);

@@ -1,10 +1,11 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "../db/entities/model.entity";
-import { FindOptionsWhere, In, Repository } from "typeorm";
+import { FindOptionsOrder, FindOptionsWhere, In, MoreThan, Repository } from "typeorm";
 import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
 import { BenchmarkEntity } from "../db/entities/benchmark.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
+import { SortingDto } from "./laptops.dto";
 
 @Injectable()
 export class LaptopsServices {
@@ -108,20 +109,31 @@ export class LaptopsServices {
     };
   }
 
+  generateOrder(sortingDto: SortingDto): FindOptionsOrder<ModelEntity> {
+    if (sortingDto.sortType == 'alphabetic') {
+      return { name: sortingDto.direction };
+    } else if (sortingDto.sortType == 'price') {
+      return { price: sortingDto.direction };
+    }
+    return undefined;
+  }
+
   async getListLaptops(
     limit = 10,
     page = 0,
     partialFilter: Partial<ModelEntity> = {},
     displayParams: string[] = [],
     ids: string[] = [],
+    sort: SortingDto,
   ) {
     if (ids.length == 0) {
       return await this.laptopsRepo
         .find({
           take: limit,
           skip: limit * page,
-          where: partialFilter,
+          where: { price: MoreThan(0) },
           relations: this.getRelations(displayParams),
+          order: this.generateOrder(sort)
         })
         .then((items) => {
           return items.map((item) => {
@@ -135,6 +147,7 @@ export class LaptopsServices {
           skip: limit * page,
           where: { id: In(ids) },
           relations: this.getRelations(displayParams),
+          order: this.generateOrder(sort)
         })
         .then((items) => {
           return items.map((item) => {
@@ -153,10 +166,11 @@ export class LaptopsServices {
       .then((it) => {
         return this.getListLaptops(
           limit,
-          page,
+          0,
           undefined,
           query,
           it.map((it) => it['id']),
+          new SortingDto()
         );
       });
 

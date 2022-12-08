@@ -1,16 +1,16 @@
 import { BadRequestException, Controller, Get, Query } from "@nestjs/common";
 import { LaptopsServices } from "./laptops.service";
-import { GetLaptopsAPIDto, GetLaptopsDto, LaptopSearchDto, Pagination } from "./laptops.dto";
+import { GetLaptopsAPIDto, GetLaptopsDto, LaptopSearchDto, Pagination, SortingDto } from "./laptops.dto";
 
 @Controller('laptops')
 export class LaptopsController {
   constructor(private laptopService: LaptopsServices) {}
 
   @Get('all')
-  async getAllLaptops(@Query() pagination: Pagination) {
+  async getAllLaptops(@Query() pagination: Pagination, @Query() sort: SortingDto) {
     const displa = ['all'];
     return this.laptopService
-      .getListLaptops(pagination.limit, pagination.page, undefined, displa, [])
+      .getListLaptops(pagination.limit, pagination.page, undefined, displa, [], sort)
       .then((response) => {
         return {
           limit: pagination.limit,
@@ -21,7 +21,7 @@ export class LaptopsController {
   }
 
   @Get()
-  async getLaptops(@Query() dto: GetLaptopsAPIDto): Promise<GetLaptopsDto> {
+  async getLaptops(@Query() dto: GetLaptopsAPIDto, @Query() sort: SortingDto): Promise<GetLaptopsDto> {
     if (!dto.ids || dto.ids.length == 0) {
       return {
         query: dto.query,
@@ -30,7 +30,7 @@ export class LaptopsController {
     }
     const splited = dto.ids;
     return this.laptopService
-      .getListLaptops(splited.length, 0, undefined, dto.query, splited)
+      .getListLaptops(splited.length, 0, undefined, dto.query, splited, sort)
       .then((it) => {
         return {
           ids: dto.ids,
@@ -47,6 +47,7 @@ export class LaptopsController {
   async searchLaptop(
     @Query() pagination: Pagination,
     @Query() laptopSearch: LaptopSearchDto,
+    @Query() sort: SortingDto
   ) {
     return this.laptopService
       .searchLaptop(

@@ -17,6 +17,26 @@ const mapper = {
     return { communications: { communicationName: Raw(TransformArrayArrayToQuery(value)) } };
   },
   screenSizes: (value: ScreenSize[][]): Predicate => {
+    if(true){
+
+      let query = ""
+      const flatten = value.flat(1)
+      for(let val in flatten){
+        query += "(%col% BETWEEN " + (Number(flatten[val])) + " AND " + (Number(flatten[val])+1) + ") OR ";
+      }
+      if(flatten.includes(">17"))
+      {
+        query+= "(%col% > 17) OR "
+      }
+      if(flatten.includes("<10"))
+      {
+        query += "(%col% < 10) OR "
+      }
+      query = query.substring(0, query.length-3)
+      console.log(query)
+      return {screen: {diagonalScreenInches: Raw(columnAlias => query.replace(/%col%/gi, columnAlias))}}
+    }
+
     return { screen: { diagonalScreenInches: In(value.flat(1)) } };
   }
 };
@@ -46,6 +66,7 @@ export const toModel = (model: PredicateWithCustom): Predicate => {
         console.log(TransformArrayArrayToQuery(model[key])("test"));
       }
       const result = mapper[key](model[key]);
+      console.log(result)
       mergeObject(result, m);
     } else if (Array.isArray(model[key])) {
       m[key] = In(model[key].flat(1));

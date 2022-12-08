@@ -1,5 +1,5 @@
 import { PredicateWithCustom } from "./base.predicate";
-import { LessThan, MoreThan } from "typeorm";
+import { Between, MoreThan } from "typeorm";
 
 export const GLOBAL_PRICE_MARGIN = 1000;
 
@@ -15,5 +15,5 @@ export const BATTERY_RUN_TIME_MORE = (value: number): PredicateWithCustom => {
 };
 
 export const PRICE_LOWER = (value: number): PredicateWithCustom => {
-  return { price: LessThan(value+GLOBAL_PRICE_MARGIN) }
+  return { price: Between(1, value+GLOBAL_PRICE_MARGIN) }
 }

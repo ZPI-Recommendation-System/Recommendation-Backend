@@ -1,26 +1,50 @@
 import { ModelEntity } from "../db/entities/model.entity";
 import { PartialType } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
-import { ArrayNotEmpty, IsNotEmpty, Max, MaxLength, Min, MinLength } from "class-validator";
+import { ArrayNotEmpty, IsIn, IsNotEmpty, IsNumber, MaxLength } from "class-validator";
 
 export class PartialModelEntity extends PartialType(ModelEntity) {}
+
+const SortBy = ['alphabetic', 'price', 'score', 'popularity'];
+export type SortByType = typeof SortBy[number];
+
+export class SortingDto {
+  @IsIn(SortBy)
+  sortType: SortByType = 'alphabetic';
+
+  @IsIn(['ASC', 'DESC'])
+  direction: 'ASC' | 'DESC' = 'ASC';
+}
 
 export class LaptopSearchDto {
   @Transform(({ value }) => value.split(','))
   query: string[];
-  @IsNotEmpty()
-  @MinLength(5)
   @MaxLength(200)
   search: string;
 }
 
 export class Pagination {
-  @Min(1)
-  @Max(50)
-  limit: number = 10;
+  @Transform((it) => {
+    const number = Number(it.value);
+    if (isNaN(number)) return 10;
+    else if (number > 50) return 50;
+    else if (number < 1) return 1;
+    return number;
+  })
+  @IsNumber()
+  limit: number;
 
-  @Min(0)
-  page: number = 0;
+  @Transform((it) => {
+    const number = Number(it.value);
+    if (isNaN(number)) {
+      return 0;
+    } else if (number < 0) {
+      return 0;
+    }
+    return number;
+  })
+  @IsNumber()
+  page = 0;
 }
 
 export class GetLaptopsDto {
