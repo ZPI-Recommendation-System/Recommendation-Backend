@@ -1,4 +1,4 @@
-import { ModelEntity } from "./entity/model.entity";
+import { ModelEntity } from "../db/entities/model.entity";
 import { PartialType } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { ArrayNotEmpty, IsNotEmpty, Max, MaxLength, Min, MinLength } from "class-validator";

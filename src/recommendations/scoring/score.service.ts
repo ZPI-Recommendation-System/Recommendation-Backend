@@ -1,6 +1,6 @@
 import { ScorersList } from "./score-generator";
 import { Injectable } from "@nestjs/common";
-import { ModelEntity } from "../../laptops/entity/model.entity";
+import { ModelEntity } from "../../db/entities/model.entity";
 import { FormDto } from "../dto/form.dto";
 
 export interface ScoredModel {

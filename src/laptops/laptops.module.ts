@@ -1,18 +1,18 @@
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { ModelEntity } from "./entity/model.entity";
-import { ProcessorEntity } from "./entity/processor.entity";
-import { ScreenEntity } from "./entity/screen.entity";
-import { GraphicsEntity } from "./entity/graphics.entity";
-import { ConnectionEntity } from "./entity/connection.entity";
-import { ControlEntity } from "./entity/control.entity";
-import { CommunicationEntity } from "./entity/communication.entity";
-import { MultimediaEntity } from "./entity/multimedia.entity";
-import { BenchmarkEntity } from "./entity/benchmark.entity";
+import { ModelEntity } from "../db/entities/model.entity";
+import { ProcessorEntity } from "../db/entities/processor.entity";
+import { ScreenEntity } from "../db/entities/screen.entity";
+import { GraphicsEntity } from "../db/entities/graphics.entity";
+import { ConnectionEntity } from "../db/entities/connection.entity";
+import { ControlEntity } from "../db/entities/control.entity";
+import { CommunicationEntity } from "../db/entities/communication.entity";
+import { MultimediaEntity } from "../db/entities/multimedia.entity";
+import { BenchmarkEntity } from "../db/entities/benchmark.entity";
 import { LaptopsServices } from "./laptops.service";
 import { LaptopsController } from "./laptops.controller";
-import { ModelImgEntity } from "./entity/model-img.entity";
-import { DriveTypeEntity } from "./entity/drive-type.entity";
+import { ModelImgEntity } from "../db/entities/model-img.entity";
+import { DriveTypeEntity } from "../db/entities/drive-type.entity";
 import { UsersModule } from "../users/user.module";
 
 @Module({

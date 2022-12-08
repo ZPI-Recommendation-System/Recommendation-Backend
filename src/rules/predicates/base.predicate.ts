@@ -1,4 +1,4 @@
-import { ModelEntity } from "../../laptops/entity/model.entity";
+import { ModelEntity } from "../../db/entities/model.entity";
 import { FindOptionsWhere } from "typeorm";
 import { FindOperator } from "typeorm/find-options/FindOperator";
 

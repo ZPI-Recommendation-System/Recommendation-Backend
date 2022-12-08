@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post, Query } from "@nestjs/common";
 import { LaptopsCrudService } from "./laptops-crud.service";
 import { UpdateLaptopsCrudDto } from "./dto/update-laptops-crud.dto";
-import { ModelEntity } from "../laptops/entity/model.entity";
+import { ModelEntity } from "../db/entities/model.entity";
 import { AdminAccess } from "../users/auth.decorators";
 
 @Controller("laptops-crud")
