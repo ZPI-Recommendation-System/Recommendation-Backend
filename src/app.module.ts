@@ -5,7 +5,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { LaptopsModule } from "./laptops/laptops.module";
 import { UsersModule } from "./users/user.module";
 import { RecommendationModule } from "./recommendations/recommendation.module";
-import { ConfigModule, ConfigService } from "@nestjs/config";
+import { ConfigModule } from "@nestjs/config";
 import { LaptopsCrudModule } from "./laptops-crud/laptops-crud.module";
 import { EntityManager } from "typeorm";
 import { TranslationsModule } from "./translations/translations.module";
@@ -14,7 +14,6 @@ import { EventEmitterModule } from "@nestjs/event-emitter";
 import { AppLoggerMiddleware } from "./app-logger.middleware";
 import { StatTrackerModule } from "./stat-tracker/stat-tracker.module";
 import { CreateTables1670434726126 } from "./db/migrations/1670434726126-CreateTables";
-import { config } from 'dotenv';
 import * as process from "process";
 
 // config();
@@ -37,7 +36,8 @@ import * as process from "process";
       database: process.env.DB_DB,
       autoLoadEntities: true,
       migrations: [CreateTables1670434726126],
-      migrationsRun: true,
+      migrationsRun: false,
+      logging: "all"
     }),
     LaptopsModule,
     UsersModule,

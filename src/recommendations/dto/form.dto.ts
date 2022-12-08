@@ -69,8 +69,9 @@ export class DataPreferences {
 
 export const UsageTypes = [
   'Aplikacje biurowe i internet',
-  'Gry',
-  'Renderowanie Filmów',
+  'Gry indie i retro',
+  'Modelowanie 3D i digital art',
+  'Najnowsze gry wysokobudżetowe',
 ];
 
 const ScreenSizes = ['<10', '10', '11', '11.5', '13', '15', '16', '17', '>17'];

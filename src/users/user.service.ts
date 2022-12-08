@@ -1,10 +1,9 @@
-import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
+import { Injectable, Logger } from "@nestjs/common";
 import { UserEntity } from "../db/entities/user.entity";
 import { Repository } from "typeorm";
 import { InjectRepository } from "@nestjs/typeorm";
 import bcrypt from "bcrypt";
 import { randomStringGenerator } from "@nestjs/common/utils/random-string-generator.util";
-import { Role } from "../db/entities/role.enum";
 
 export interface LoggedInUser {
   userId: number;
@@ -12,7 +11,7 @@ export interface LoggedInUser {
 }
 
 @Injectable()
-export class UserService implements OnModuleInit {
+export class UserService {
   private tokens: LoggedInUser[] = [];
   private logger = new Logger(UserService.name);
 
@@ -77,18 +76,5 @@ export class UserService implements OnModuleInit {
 
   async getAdmin(){
     return this.userRepository.findOneBy({username: "admin"});
-  }
-
-  async onModuleInit(): Promise<any> {
-    if ((await this.userRepository.count()) == 0) {
-      const entity = new UserEntity();
-      entity.username = "admin";
-      entity.password = await bcrypt.hash("admin", 10);
-      entity.role = Role.Sudo;
-      entity.email = "admin@admin.admin";
-      entity.name = "Adam";
-      entity.surname = "Abacki";
-      return this.userRepository.save(entity).then();
-    }
   }
 }
