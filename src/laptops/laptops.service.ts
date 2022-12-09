@@ -133,7 +133,7 @@ export class LaptopsServices {
           skip: limit * page,
           where: { price: MoreThan(0) },
           relations: this.getRelations(displayParams),
-          order: this.generateOrder(sort)
+          order: this.generateOrder(sort),
         })
         .then((items) => {
           return items.map((item) => {

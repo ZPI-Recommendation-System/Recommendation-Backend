@@ -7,10 +7,20 @@ export class LaptopsController {
   constructor(private laptopService: LaptopsServices) {}
 
   @Get('all')
-  async getAllLaptops(@Query() pagination: Pagination, @Query() sort: SortingDto) {
+  async getAllLaptops(
+    @Query() pagination: Pagination,
+    @Query() sort: SortingDto,
+  ) {
     const displa = ['all'];
     return this.laptopService
-      .getListLaptops(pagination.limit, pagination.page, undefined, displa, [], sort)
+      .getListLaptops(
+        pagination.limit,
+        pagination.page,
+        undefined,
+        displa,
+        [],
+        sort,
+      )
       .then((response) => {
         return {
           limit: pagination.limit,
@@ -21,7 +31,10 @@ export class LaptopsController {
   }
 
   @Get()
-  async getLaptops(@Query() dto: GetLaptopsAPIDto, @Query() sort: SortingDto): Promise<GetLaptopsDto> {
+  async getLaptops(
+    @Query() dto: GetLaptopsAPIDto,
+    @Query() sort: SortingDto,
+  ): Promise<GetLaptopsDto> {
     if (!dto.ids || dto.ids.length == 0) {
       return {
         query: dto.query,
@@ -47,7 +60,7 @@ export class LaptopsController {
   async searchLaptop(
     @Query() pagination: Pagination,
     @Query() laptopSearch: LaptopSearchDto,
-    @Query() sort: SortingDto
+    @Query() sort: SortingDto,
   ) {
     return this.laptopService
       .searchLaptop(
@@ -68,7 +81,7 @@ export class LaptopsController {
   }
 
   @Get('benchmarkstats')
-  getBenchmarkStats(){
-    return this.laptopService.getBenchmarkStats()
+  getBenchmarkStats() {
+    return this.laptopService.getBenchmarkStats();
   }
 }

@@ -77,4 +77,9 @@ export class UserService {
   async getAdmin(){
     return this.userRepository.findOneBy({username: "admin"});
   }
+
+  register(user: UserEntity) {
+    user.password = bcrypt.hashSync(user.password, 10)
+    return this.userRepository.save(user)
+  }
 }
