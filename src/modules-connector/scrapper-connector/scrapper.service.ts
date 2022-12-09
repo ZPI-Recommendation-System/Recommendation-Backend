@@ -10,6 +10,11 @@ export interface ScrapperStatus {
   lastTimeEstimate: number;
 }
 
+export interface JobRequest{
+  jobName: string;
+  payload: any;
+}
+
 @Injectable()
 export class ScrapperService {
   logger = new Logger(ScrapperService.name);
@@ -18,7 +23,7 @@ export class ScrapperService {
   constructor(private eventEmmiter: EventEmitter2) {
   }
 
-  async requestJob(payload: any): Promise<string> {
+  async requestJob(payload: JobRequest): Promise<string> {
     return this.eventEmmiter.emitAsync(SCRAPPER_JOB_REQUEST, payload).then((it) => {
       if (it) {
         return it[0];
@@ -44,6 +49,7 @@ export class ScrapperService {
           lastTimeEstimate: undefined,
         };
       }
+      this.scrapperStatus.jobName = scrapperDto.jobName;
       this.scrapperStatus.status = scrapperDto.workStatus;
       this.scrapperStatus.lines = this.scrapperStatus.lines.concat(
         scrapperDto.logs,

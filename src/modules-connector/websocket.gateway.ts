@@ -17,6 +17,7 @@ import { Socket } from "socket.io";
 import { WebsocketService } from "./websocket.service";
 import { Logger } from "@nestjs/common";
 import { OnEvent } from "@nestjs/event-emitter";
+import { JobRequest } from "./scrapper-connector/scrapper.service";
 
 @WebSocketGateway({
   cors: {
@@ -50,7 +51,7 @@ export class WebsocketGateway
   timeout = 10000;
 
   @OnEvent(SCRAPPER_JOB_REQUEST)
-  async scrapperAuthRequest(payload: any): Promise<any> {
+  async scrapperAuthRequest(payload: JobRequest): Promise<any> {
     if (this.requestWrapper.jobStatus == 'in_progress') {
       return { status: 'in_progress' };
     }
