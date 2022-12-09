@@ -190,7 +190,8 @@ export class LaptopsServices {
   }
 
   async updateLaptop(id: string, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
-    return this.laptopsRepo.update({ id: id }, updateLaptopsCrudDto);
+    updateLaptopsCrudDto.id = id;
+    return this.laptopsRepo.save(updateLaptopsCrudDto);
   }
 
   removeLaptop(id: string) {
