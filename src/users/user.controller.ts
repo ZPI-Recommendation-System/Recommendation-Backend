@@ -1,7 +1,10 @@
-import { Controller, Get, Post, Request, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Request, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { UserService } from "./user.service";
-import { AdminAccess } from "./auth.decorators";
+import { AdminAccess, Roles } from "./auth.decorators";
+import { UserEntity } from "../db/entities/user.entity";
+import { Role } from "../db/entities/role.enum";
+import { TokenGuard } from "./guards/token.guard";
 
 @Controller("user")
 export class UserController {
@@ -21,5 +24,13 @@ export class UserController {
   @AdminAccess
   async getSelf(@Request() request) {
     return request.user;
+  }
+
+  @Put("/register")
+  @UseGuards(TokenGuard)
+  @Roles(Role.Sudo)
+  async register(@Body() user: UserEntity)
+  {
+    return this.userController.register(user);
   }
 }
