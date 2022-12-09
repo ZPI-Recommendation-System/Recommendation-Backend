@@ -1,8 +1,9 @@
 import { Injectable, Logger } from "@nestjs/common";
-import { SCRAPPER_AUTH_REQUEST, SCRAPPER_WORK_STATUS, ScrapperWorkStatusDto, WorkStatus } from "../websocket.events";
+import { SCRAPPER_JOB_REQUEST, SCRAPPER_WORK_STATUS, ScrapperWorkStatusDto, WorkStatus } from "../websocket.events";
 import { EventEmitter2, OnEvent } from "@nestjs/event-emitter";
 
 export interface ScrapperStatus {
+  jobName: string;
   status: WorkStatus;
   lines: string[];
   lastPayload: any;
@@ -12,17 +13,17 @@ export interface ScrapperStatus {
 @Injectable()
 export class ScrapperService {
   logger = new Logger(ScrapperService.name);
-  private scrapperStatus: ScrapperStatus = {status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: []};
+  private scrapperStatus: ScrapperStatus = {jobName: "unknown", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: []};
 
   constructor(private eventEmmiter: EventEmitter2) {
   }
 
-  async requestAuthLink(): Promise<string> {
-    return this.eventEmmiter.emitAsync(SCRAPPER_AUTH_REQUEST).then((it) => {
+  async requestJob(payload: any): Promise<string> {
+    return this.eventEmmiter.emitAsync(SCRAPPER_JOB_REQUEST, payload).then((it) => {
       if (it) {
         return it[0];
       } else {
-        return { status: 'event_error', auth_link: '' };
+        return { status: 'event_error' };
       }
     });
   }
@@ -34,9 +35,10 @@ export class ScrapperService {
   @OnEvent(SCRAPPER_WORK_STATUS)
   async scrapperWorkStatusEvent(scrapperDto: ScrapperWorkStatusDto) {
     try {
-      if (scrapperDto.workStatus === 'waiting_for_auth' || scrapperDto.workStatus === 'authorised') {
+      if (scrapperDto.workStatus === 'waiting_for_job' || scrapperDto.workStatus === 'authorised') {
         this.scrapperStatus = {
-          status: 'authorised',
+          jobName: scrapperDto.jobName,
+          status: scrapperDto.workStatus,
           lines: [],
           lastPayload: undefined,
           lastTimeEstimate: undefined,

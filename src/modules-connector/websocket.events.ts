@@ -1,4 +1,4 @@
-export const SCRAPPER_AUTH_REQUEST = 'scrapper.auth.request';
+export const SCRAPPER_JOB_REQUEST = 'scrapper.auth.request';
 export const SCRAPPER_WORK_STATUS = 'scrapper.work.status';
 export const SCRAPPER_WORK_PING = 'scrapper.work.ping';
 export const SCRAPPER_WORK_CANCEL = 'scrapper.work.cancel';
@@ -19,7 +19,7 @@ export interface ScrapperAuthRequestDto {
 // }
 
 export type WorkStatus =
-  | 'waiting_for_auth'
+  | 'waiting_for_job'
   | 'authorised'
   | 'running'
   | 'finished'
@@ -29,6 +29,7 @@ export type WorkStatus =
   | 'unknown';
 
 export interface ScrapperWorkStatusDto {
+  jobName: string;
   workStatus: WorkStatus;
   estimatedTime: number;
   payload: any;
