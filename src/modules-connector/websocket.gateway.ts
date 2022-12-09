@@ -7,7 +7,7 @@ import {
   WebSocketGateway
 } from "@nestjs/websockets";
 import {
-  SCRAPPER_AUTH_REQUEST,
+  SCRAPPER_JOB_REQUEST,
   SCRAPPER_WORK_STATUS,
   ScrapperAuthRequestDto,
   ScrapperWorkStatusDto
@@ -42,49 +42,49 @@ export class WebsocketGateway
     );
   }
   test: 'ready' | 'in_progress' | 'cancelled' | 'completed';
-  requestWrapper: { authStatus: string; authResponse: any } = {
-    authStatus: 'ready',
-    authResponse: undefined,
+  requestWrapper: { jobStatus: string; jobResponse: any } = {
+    jobStatus: 'ready',
+    jobResponse: undefined,
   };
 
   timeout = 10000;
 
-  @OnEvent(SCRAPPER_AUTH_REQUEST)
-  async scrapperAuthRequest(): Promise<any> {
-    if (this.requestWrapper.authStatus == 'in_progress') {
-      return { status: 'in_progress', auth_link: '' };
+  @OnEvent(SCRAPPER_JOB_REQUEST)
+  async scrapperAuthRequest(payload: any): Promise<any> {
+    if (this.requestWrapper.jobStatus == 'in_progress') {
+      return { status: 'in_progress' };
     }
     if (this.connectedScrapper) {
-      this.requestWrapper.authStatus = 'in_progress';
+      this.requestWrapper.jobStatus = 'in_progress';
       if (
-        this.connectedScrapper.emit(SCRAPPER_AUTH_REQUEST, undefined, (it) => {
+        this.connectedScrapper.emit(SCRAPPER_JOB_REQUEST, payload, (it) => {
           this.logger.debug('RESPONSE!');
-          if (this.requestWrapper.authStatus !== 'cancelled') {
-            this.requestWrapper.authResponse = it;
-            this.requestWrapper.authStatus = 'completed';
+          if (this.requestWrapper.jobStatus !== 'cancelled') {
+            this.requestWrapper.jobResponse = it;
+            this.requestWrapper.jobStatus = 'completed';
           }
         })
       ) {
         const start = Date.now();
         this.logger.debug('WAITING FOR ACC...');
         while (
-          this.requestWrapper.authStatus !== 'completed' &&
+          this.requestWrapper.jobStatus !== 'completed' &&
           Date.now() - start < this.timeout
         ) {
           await new Promise((f) => setTimeout(f, 500));
         }
-        if (this.requestWrapper.authStatus === 'completed') {
-          this.requestWrapper.authStatus = 'ready';
-          return this.requestWrapper.authResponse;
+        if (this.requestWrapper.jobStatus === 'completed') {
+          this.requestWrapper.jobStatus = 'ready';
+          return this.requestWrapper.jobResponse;
         } else {
-          this.requestWrapper.authStatus = 'cancelled';
-          return { status: 'no_response', auth_link: '' };
+          this.requestWrapper.jobStatus = 'cancelled';
+          return { status: 'no_response' };
         }
       } else {
-        return { status: 'request_error', auth_link: '' };
+        return { status: 'request_error' };
       }
     } else {
-      return { status: 'disconnected', auth_link: '' };
+      return { status: 'disconnected' };
     }
   }
 
@@ -112,12 +112,12 @@ export class WebsocketGateway
     }
   }
 
-  @SubscribeMessage(SCRAPPER_AUTH_REQUEST)
+  @SubscribeMessage(SCRAPPER_JOB_REQUEST)
   authRequestStart(
     @MessageBody() data: ScrapperAuthRequestDto,
     @ConnectedSocket() client: Socket,
   ): string {
-    this.logger.debug(SCRAPPER_AUTH_REQUEST);
+    this.logger.debug(SCRAPPER_JOB_REQUEST);
     if (this.authClient(client)) {
       this.logger.debug('AUTH COMPLETED');
       return this.websocketService.authRequest(data) ? 'ok' : 'invalid';

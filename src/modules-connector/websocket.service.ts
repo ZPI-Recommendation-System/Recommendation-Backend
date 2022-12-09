@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import {
-  SCRAPPER_AUTH_REQUEST,
+  SCRAPPER_JOB_REQUEST,
   SCRAPPER_WORK_STATUS,
   ScrapperAuthRequestDto,
   ScrapperWorkStatusDto
@@ -20,7 +20,7 @@ export class WebsocketService {
   authRequest(data: ScrapperAuthRequestDto) {
     if(data && data.timeout !== undefined && data.authLink)
     {
-      this.eventEmmiter.emit(SCRAPPER_AUTH_REQUEST, data);
+      this.eventEmmiter.emit(SCRAPPER_JOB_REQUEST, data);
       return true;
     }
     else{
