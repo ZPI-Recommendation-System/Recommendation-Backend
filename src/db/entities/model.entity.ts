@@ -123,4 +123,10 @@ export class ModelEntity {
   @ManyToMany(() => ModelImgEntity, { cascade: ['insert'] })
   @JoinTable()
   images: ModelImgEntity[];
+
+  @Column({ default: 0 })
+  estimatedScore: number;
+
+  @Column({ default: 0 })
+  estimatedPopularity: number;
 }

@@ -61,7 +61,7 @@ const ScoreCPU: ScoreFunction = (form: FormDto, model: ModelEntity) => {
   const price = 100;
   return {
     weight: HIGH_IMPORTANCE,
-    score: model.processor.benchmark.benchmark
+    score: model.processor.benchmark.benchmark,
   };
 };
 
@@ -70,7 +70,7 @@ const ScoreGPU: ScoreFunction = (form: FormDto, model: ModelEntity) => {
   //TODO: GPU HAVE DIFFEREENT WEIGHTS DEPENDS ON USAGE
   return {
     weight: MEDIUM_IMPORTANCE,
-    score: model.graphics.benchmark?.benchmark
+    score: model.graphics.benchmark?.benchmark,
   };
 };
 
@@ -78,34 +78,33 @@ const ScoreRAM: ScoreFunction = (form: FormDto, model: ModelEntity) => {
   const price = 100; //TODO
   return {
     weight: MEDIUM_IMPORTANCE,
-    score: model.ramAmount
+    score: model.ramAmount,
   };
 };
 
 const ScoreBatteryRunTime: ScoreFunction = (
   form: FormDto,
-  model: ModelEntity
+  model: ModelEntity,
 ) => {
   return {
     weight: MEDIUM_IMPORTANCE,
-    score: model.batteryTime
+    score: model.batteryTime,
   };
 };
 
 const ScoreDiskType: ScoreFunction = (forms: FormDto, model: ModelEntity) => {
-  if (model.driveType.toLowerCase() == "SSD") {
+  if (model.driveType.toLowerCase() == 'SSD') {
     return {
       weight: MEDIUM_IMPORTANCE,
-      score: model.driveStorage * 10
+      score: model.driveStorage/100,
     };
   } else {
     return {
       weight: MEDIUM_IMPORTANCE,
-      score: model.driveStorage
+      score: model.driveStorage/1000,
     };
   }
 };
-
 
 export const ScorersList: ScoreFunction[] = [
   ScoreCPU,
@@ -113,7 +112,8 @@ export const ScorersList: ScoreFunction[] = [
   ScoreScreenSize,
   ScoreRAM,
   ScoreDiskType,
-  ScoreBatteryRunTime
+  ScoreBatteryRunTime,
+
 ];
 
 //TODO: CZY JA POWINIENEM OCENIAĆ FILTRY SŁABE? TAK NAPRAWDE ZOSTAJA GENERIC CHARACTERISTICS TERAZ

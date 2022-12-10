@@ -16,24 +16,28 @@ const mapper = {
   communicationHas: (value: string[][]): Predicate => {
     return { communications: { communicationName: Raw(TransformArrayArrayToQuery(value)) } };
   },
+  multimediaHas: (value: string[][]): Predicate => {
+    return { multimedia: { multimediaName: Raw(TransformArrayArrayToQuery(value)) } };
+  },
   screenSizes: (value: ScreenSize[][]): Predicate => {
     if(true){
 
       let query = ""
-      const flatten = value.flat(1)
+      const base = value.flat(1)
+      const flatten = base.filter(it => !isNaN(+it))
       for(let val in flatten){
         query += "(%col% BETWEEN " + (Number(flatten[val])) + " AND " + (Number(flatten[val])+1) + ") OR ";
       }
-      if(flatten.includes(">17"))
+      if(base.includes(">17"))
       {
         query+= "(%col% > 17) OR "
       }
-      if(flatten.includes("<10"))
+      if(base.includes("<10"))
       {
         query += "(%col% < 10) OR "
       }
-      query = query.substring(0, query.length-3)
-      console.log(query)
+      query = "("+query.substring(0, query.length-3) + ")"
+      // console.log(query)
       return {screen: {diagonalScreenInches: Raw(columnAlias => query.replace(/%col%/gi, columnAlias))}}
     }
 
@@ -62,11 +66,8 @@ export const toModel = (model: PredicateWithCustom): Predicate => {
   const m: Predicate = {};
   for (const key in model) {
     if (key in mapper) {
-      if (key == "connectionsHas") {
-        console.log(TransformArrayArrayToQuery(model[key])("test"));
-      }
       const result = mapper[key](model[key]);
-      console.log(result)
+      // console.log(result)
       mergeObject(result, m);
     } else if (Array.isArray(model[key])) {
       m[key] = In(model[key].flat(1));
