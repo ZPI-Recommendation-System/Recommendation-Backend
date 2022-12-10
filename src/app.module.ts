@@ -15,6 +15,7 @@ import { AppLoggerMiddleware } from "./app-logger.middleware";
 import { StatTrackerModule } from "./stat-tracker/stat-tracker.module";
 import { CreateTables1670434726126 } from "./db/migrations/1670434726126-CreateTables";
 import * as process from "process";
+import { ScheduleModule } from "@nestjs/schedule";
 
 // config();
 //
@@ -39,6 +40,7 @@ import * as process from "process";
       migrationsRun: false,
       logging: "all"
     }),
+    ScheduleModule.forRoot(),
     LaptopsModule,
     UsersModule,
     RecommendationModule,

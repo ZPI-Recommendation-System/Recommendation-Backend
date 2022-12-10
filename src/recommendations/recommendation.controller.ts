@@ -2,6 +2,7 @@ import { Body, Controller, Get, ParseIntPipe, Post, Query } from "@nestjs/common
 import { FormDto } from "./dto/form.dto";
 import { RecommendationService } from "./recommendation.service";
 import { CountLaptopsDto, RecommendationDTOBack } from "./dto/recommendation.dto";
+import { SortingDto } from "../laptops/laptops.dto";
 
 @Controller('recommendations')
 export class RecommendationController {
@@ -11,9 +12,10 @@ export class RecommendationController {
   async getRecommendations(
     @Query('limit', ParseIntPipe) limit = 0,
     @Body() form: FormDto,
+    @Query() sort: SortingDto
   ): Promise<RecommendationDTOBack | any> {
     return this.recommendationService
-      .processRecommendation(form, limit)
+      .processRecommendation(form, limit, sort)
       .then((it) => {
         return {
           status: 'ok',

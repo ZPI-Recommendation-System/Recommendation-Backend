@@ -41,6 +41,17 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
     if (form.internetPreferences.lanPort) {
       filters.push(preGeneratedFilters.has_lan_port);
     }
+    if (form.internetPreferences.simCard) {
+      filters.push(preGeneratedFilters.has_sim_card);
+    }
+  }
+  if (form.dataPreferences) {
+    if (form.dataPreferences.sdCardReader) {
+      filters.push(preGeneratedFilters.has_sd_card_reader);
+    }
+    if (form.dataPreferences.diskDrive) {
+      filters.push(preGeneratedFilters.has_disk_drive);
+    }
   }
   if (form.batteryRunTime) {
     filters.push(
@@ -51,11 +62,16 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
     );
   }
   if (form.preferredScreenSizes && form.preferredScreenSizes.length > 0) {
-    const filtered = form.preferredScreenSizes.filter((it) => !isNaN(+it));
+    // const filtered = form.preferredScreenSizes.filter((it) => !isNaN(+it));
     //TODO: Obsłużyć <10 i >17. Na to trzeba zrobić custom SQL Query
-    filters.push(WeakFilterCreator('Wielkość ekranu', SCREEN_SIZE(filtered.map(it=>(+it)))));
-    console.log(filters)
-    if(form.preferredScreenSizes.includes("<10")){
+    filters.push(
+      WeakFilterCreator(
+        'Wielkość ekranu',
+        SCREEN_SIZE(form.preferredScreenSizes),
+      ),
+    );
+    console.log(filters);
+    if (form.preferredScreenSizes.includes('<10')) {
       // filters.push(WeakFilterCreator('screen_size_comparator'))
     }
   }

@@ -1,20 +1,26 @@
-import { Injectable, Logger } from "@nestjs/common";
+import { Injectable, Logger, OnModuleInit } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { ModelEntity } from "../db/entities/model.entity";
-import { FindOptionsOrder, FindOptionsWhere, In, MoreThan, Repository } from "typeorm";
+import { EntityManager, FindOptionsOrder, FindOptionsWhere, In, MoreThan, Repository } from "typeorm";
 import { UpdateLaptopsCrudDto } from "../laptops-crud/dto/update-laptops-crud.dto";
 import { BenchmarkEntity } from "../db/entities/benchmark.entity";
 import { Predicate } from "../rules/predicates/base.predicate";
 import { SortingDto } from "./laptops.dto";
+import { Cron, CronExpression } from "@nestjs/schedule";
 
 @Injectable()
-export class LaptopsServices {
+export class LaptopsServices implements OnModuleInit {
   private logger = new Logger(LaptopsServices.name);
   constructor(
     @InjectRepository(ModelEntity) private laptopsRepo: Repository<ModelEntity>,
+    private entityManager: EntityManager,
     @InjectRepository(BenchmarkEntity)
     private benchmarkRepo: Repository<BenchmarkEntity>,
   ) {}
+
+  async onModuleInit() {
+    await this.updatePopularityAndScore();
+  }
 
   findLaptop(
     filter: FindOptionsWhere<ModelEntity>,
@@ -147,7 +153,7 @@ export class LaptopsServices {
           skip: limit * page,
           where: { id: In(ids) },
           relations: this.getRelations(displayParams),
-          order: this.generateOrder(sort)
+          order: this.generateOrder(sort),
         })
         .then((items) => {
           return items.map((item) => {
@@ -157,7 +163,7 @@ export class LaptopsServices {
     }
   }
 
-  searchLaptop(search: string, query: string[], limit: number, page: number) {
+  searchLaptop(search: string, query: string[], limit: number, page: number, sort: SortingDto) {
     return this.laptopsRepo
       .query(
         'SELECT id, SIMILARITY(NAME, $1) AS "similarity" FROM PUBLIC.model_entity ORDER BY "similarity" DESC LIMIT $2 OFFSET $3;',
@@ -170,23 +176,10 @@ export class LaptopsServices {
           undefined,
           query,
           it.map((it) => it['id']),
-          new SortingDto()
+          sort
         );
       });
 
-    // return this.getListLaptops(limit, page, undefined, query.split(','), []);
-    // this.laptopsRepo
-    //   .find({
-    //     where: { name: Like("%" + search + "%") },
-    //     relations: this.getRelations(query.split(",")),
-    //     take: limit,
-    //     skip: limit*page
-    //   })
-    //   .then((items) => {
-    //     return items.map((item) => {
-    //       return this.filterItem(item, query.split(","));
-    //     });
-    //   });
   }
 
   async updateLaptop(id: string, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
@@ -206,6 +199,55 @@ export class LaptopsServices {
     return this.benchmarkRepo.query(
       'SELECT "type", MAX("benchmark"), MIN("benchmark") FROM PUBLIC.benchmark_entity GROUP BY "type"',
     );
+  }
+
+
+  @Cron(CronExpression.EVERY_12_HOURS)
+  async updatePopularityAndScore() {
+    return Promise.all([
+      this.laptopsRepo.query(
+        'UPDATE model_entity as t1 SET "estimatedPopularity" = t2."count" FROM (SELECT "laptopId", COUNT(*) AS "count" FROM stat_tracker_entity t3 GROUP BY t3."laptopId" ) AS t2 WHERE t1.id = t2."laptopId"',
+      ),
+      await this.entityManager.query(
+        'UPDATE model_entity\n' +
+          'SET "estimatedScore" = \n' +
+          '\tCASE \n' +
+          '\t\tWHEN "score" IS NULL THEN 0\n' +
+          '\t\tELSE "score"\n' +
+          '\tEND\n' +
+          'FROM\n' +
+          '\n' +
+          '(\n' +
+          '\tSELECT \n' +
+          '\tt2.id AS laptopid,\n' +
+          '\tt2."driveScore" + t2."ramScore" + t2."batteryScore" + t2."cpuScore" + t2."gpuScore" AS score\n' +
+          '\tFROM\n' +
+          '\t(\n' +
+          '\t\tSELECT \n' +
+          '\t\t\tmodel_entity.id AS id, \n' +
+          '\t\t\tCASE \n' +
+          '\t\t\t\tWHEN model_entity."driveType" LIKE \'%SSD%\' THEN (model_entity."driveStorage"/100)\n' +
+          '\t\t\t\tELSE model_entity."driveStorage"/1000\n' +
+          '\t\t\tEND AS "driveScore",\n' +
+          '\t\t\tmodel_entity."ramAmount" AS "ramScore", \n' +
+          '\t\t\tCASE \n' +
+          '\t\t\t\tWHEN model_entity."batteryTime" IS NULL THEN 0 \n' +
+          '\t\t\t\tELSE model_entity."batteryTime"\n' +
+          '\t\t\tEND AS "batteryScore", \n' +
+          '\t\t\tcpu_b."benchmark" AS "cpuScore", \n' +
+          '\t\t\tgpu_b."benchmark" AS "gpuScore" \n' +
+          '\t\t\n' +
+          '\t\tFROM model_entity\n' +
+          '\t\tLEFT JOIN processor_entity ON model_entity."processorId" = processor_entity.id \n' +
+          '\t\t\tLEFT JOIN benchmark_entity cpu_b ON processor_entity."benchmarkId" = cpu_b.id\n' +
+          '\t\tLEFT JOIN graphics_entity ON model_entity."graphicsId" = graphics_entity.id\n' +
+          '\t\t\tLEFT JOIN benchmark_entity gpu_b ON graphics_entity."benchmarkId" = gpu_b.id\n' +
+          '\t\tWHERE model_entity."estimatedScore" = 0\n' +
+          '\t) AS t2\n' +
+          ') AS t3\n' +
+          'WHERE t3.laptopid = model_entity.id',
+      ),
+    ]);
   }
 
   async count(strong: Predicate, maxPrice: Predicate) {
