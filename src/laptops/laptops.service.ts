@@ -176,7 +176,7 @@ export class LaptopsServices implements OnModuleInit {
   ) {
     return this.laptopsRepo
       .query(
-        'SELECT id, SIMILARITY(NAME, $1) AS "similarity" FROM PUBLIC.model_entity ORDER BY "similarity" DESC LIMIT $2 OFFSET $3;',
+        'SELECT id, SIMILARITY(NAME, $1) AS "similarity" FROM PUBLIC.model_entity WHERE "price" != 0 ORDER BY "similarity" DESC LIMIT $2 OFFSET $3;',
         [search, limit, limit * page],
       )
       .then((it) => {

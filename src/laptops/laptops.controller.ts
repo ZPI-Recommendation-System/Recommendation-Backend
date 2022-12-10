@@ -68,7 +68,7 @@ export class LaptopsController {
         laptopSearch.query,
         pagination.limit,
         pagination.page,
-        sort
+        sort,
       )
       .then((it) => {
         return {
