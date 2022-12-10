@@ -7,6 +7,7 @@ import { getStrongFilter } from "./filters/strong.filter";
 import { LaptopsServices } from "../laptops/laptops.service";
 import { AND } from "../rules/predicates/relation.predicate";
 import { ScoreService } from "./scoring/score.service";
+import { SortingDto } from "../laptops/laptops.dto";
 
 @Injectable()
 export class RecommendationService {
@@ -25,12 +26,32 @@ export class RecommendationService {
     return this.laptopService.count(strong, strongPrice);
   }
 
+  sortingRule(
+    sort: SortingDto,
+    model1: ModelEntity,
+    model2: ModelEntity,
+  ): number {
+    let s = 0;
+    if (sort.sortType == 'alphabetic') {
+      s = model1.name.localeCompare(model2.name);
+    } else if (sort.sortType == 'price') {
+      s = model2.price - model1.price;
+    } else if (sort.sortType == 'score') {
+      s = model2.estimatedScore - model1.estimatedScore;
+    } else if (sort.sortType == 'popularity') {
+      s = model2.estimatedPopularity - model1.estimatedPopularity;
+    }
+    if (sort.direction == 'DESC') s = -s;
+    return s;
+  }
+
   getLaptopEntryWithScores(
     form: FormDto,
     strongFilters: Predicate,
     weakFilters: WeakFilter[],
     deletedWeakFilters: WeakFilter[],
     limit: number,
+    sort: SortingDto,
   ) {
     return this.laptopService
       .findLaptop(
@@ -43,7 +64,12 @@ export class RecommendationService {
       })
       .then((it) => {
         return {
-          items: it.map((it) => it.model),
+          items: it
+            .map((it) => {
+              it.model.estimatedScore = it.score;
+              return it.model;
+            })
+            .sort((model1, model2) => this.sortingRule(sort, model1, model2)),
           weakFilters: weakFilters.map((it) => it.ruleName),
           deletedWeakFilters: deletedWeakFilters.map((it) => it.ruleName),
         };
@@ -53,6 +79,7 @@ export class RecommendationService {
   async processRecommendation(
     form: FormDto,
     limit = 50,
+    sort: SortingDto,
   ): Promise<{ items: ModelEntity | any[]; weakFilters: any[] }[]> {
     if (limit > 20) limit = 20;
     else if (limit < 5) limit = 5;
@@ -81,6 +108,7 @@ export class RecommendationService {
         currentWeakFilters,
         deletedWeakFilters,
         limit,
+        sort,
       );
       lists.push(lastLaptops);
       deletedWeakFilters = deletedWeakFilters.concat(
