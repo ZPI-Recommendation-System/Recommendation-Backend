@@ -120,6 +120,10 @@ export class LaptopsServices implements OnModuleInit {
       return { name: sortingDto.direction };
     } else if (sortingDto.sortType == 'price') {
       return { price: sortingDto.direction };
+    } else if (sortingDto.sortType == 'score') {
+      return { estimatedScore: sortingDto.direction };
+    } else if (sortingDto.sortType == 'popularity') {
+      return { estimatedPopularity: sortingDto.direction };
     }
     return undefined;
   }
@@ -163,7 +167,13 @@ export class LaptopsServices implements OnModuleInit {
     }
   }
 
-  searchLaptop(search: string, query: string[], limit: number, page: number, sort: SortingDto) {
+  searchLaptop(
+    search: string,
+    query: string[],
+    limit: number,
+    page: number,
+    sort: SortingDto,
+  ) {
     return this.laptopsRepo
       .query(
         'SELECT id, SIMILARITY(NAME, $1) AS "similarity" FROM PUBLIC.model_entity ORDER BY "similarity" DESC LIMIT $2 OFFSET $3;',
@@ -176,10 +186,9 @@ export class LaptopsServices implements OnModuleInit {
           undefined,
           query,
           it.map((it) => it['id']),
-          sort
+          sort,
         );
       });
-
   }
 
   async updateLaptop(id: string, updateLaptopsCrudDto: UpdateLaptopsCrudDto) {
@@ -200,7 +209,6 @@ export class LaptopsServices implements OnModuleInit {
       'SELECT "type", MAX("benchmark"), MIN("benchmark") FROM PUBLIC.benchmark_entity GROUP BY "type"',
     );
   }
-
 
   @Cron(CronExpression.EVERY_12_HOURS)
   async updatePopularityAndScore() {

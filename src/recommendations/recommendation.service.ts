@@ -7,7 +7,6 @@ import { getStrongFilter } from "./filters/strong.filter";
 import { LaptopsServices } from "../laptops/laptops.service";
 import { AND } from "../rules/predicates/relation.predicate";
 import { ScoreService } from "./scoring/score.service";
-import { SortingDto } from "../laptops/laptops.dto";
 
 @Injectable()
 export class RecommendationService {
@@ -32,7 +31,6 @@ export class RecommendationService {
     weakFilters: WeakFilter[],
     deletedWeakFilters: WeakFilter[],
     limit: number,
-    sort: SortingDto,
   ) {
     return this.laptopService
       .findLaptop(
@@ -55,7 +53,6 @@ export class RecommendationService {
   async processRecommendation(
     form: FormDto,
     limit = 50,
-    sort: SortingDto,
   ): Promise<{ items: ModelEntity | any[]; weakFilters: any[] }[]> {
     if (limit > 20) limit = 20;
     else if (limit < 5) limit = 5;
@@ -84,7 +81,6 @@ export class RecommendationService {
         currentWeakFilters,
         deletedWeakFilters,
         limit,
-        sort,
       );
       lists.push(lastLaptops);
       deletedWeakFilters = deletedWeakFilters.concat(
