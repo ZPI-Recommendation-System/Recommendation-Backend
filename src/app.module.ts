@@ -21,10 +21,10 @@ import { ScheduleModule } from "@nestjs/schedule";
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot({
-      ignoreErrors: true
+      ignoreErrors: true,
     }),
     TypeOrmModule.forRoot({
-      type: "postgres",
+      type: 'postgres',
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USER,
@@ -32,8 +32,7 @@ import { ScheduleModule } from "@nestjs/schedule";
       database: process.env.DB_DB,
       autoLoadEntities: true,
       migrations: [CreateTables1670434726126],
-      migrationsRun: false,
-      logging: "all"
+      migrationsRun: true,
     }),
     ScheduleModule.forRoot(),
     LaptopsModule,
@@ -42,20 +41,19 @@ import { ScheduleModule } from "@nestjs/schedule";
     LaptopsCrudModule,
     TranslationsModule,
     WebsocketsModule,
-    StatTrackerModule
+    StatTrackerModule,
   ],
   controllers: [AppController],
-  providers: [AppService]
+  providers: [AppService],
 })
 export class AppModule implements NestModule, OnModuleInit {
-  constructor(private entityManager: EntityManager) {
-  }
+  constructor(private entityManager: EntityManager) {}
 
   async onModuleInit() {
-    return this.entityManager.query("CREATE EXTENSION IF NOT EXISTS pg_trgm;");
+    return this.entityManager.query('CREATE EXTENSION IF NOT EXISTS pg_trgm;');
   }
 
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(AppLoggerMiddleware).forRoutes("*")
+    consumer.apply(AppLoggerMiddleware).forRoutes('*');
   }
 }

@@ -19,7 +19,10 @@ export class LaptopsServices implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    await this.updatePopularityAndScore();
+    setTimeout(async () => {
+      this.logger.log('Executing updating popularity and score!');
+      await this.updatePopularityAndScore();
+    }, 600000);
   }
 
   findLaptop(
@@ -205,7 +208,13 @@ export class LaptopsServices implements OnModuleInit {
   }
 
   getBenchmarkStats() {
-    return this.benchmarkRepo.createQueryBuilder("benchmark").select("benchmark.type").addSelect('MAX(benchmark.benchmark)', "max").addSelect("MIN(benchmark.benchmark)", "min").groupBy("type").getRawMany()
+    return this.benchmarkRepo
+      .createQueryBuilder('benchmark')
+      .select('benchmark.type')
+      .addSelect('MAX(benchmark.benchmark)', 'max')
+      .addSelect('MIN(benchmark.benchmark)', 'min')
+      .groupBy('type')
+      .getRawMany();
     // return this.benchmarkRepo.query(
     //   'SELECT "type", MAX("benchmark"), MIN("benchmark") FROM PUBLIC.benchmark_entity GROUP BY "type"',
     // );
@@ -213,49 +222,58 @@ export class LaptopsServices implements OnModuleInit {
 
   @Cron(CronExpression.EVERY_12_HOURS)
   async updatePopularityAndScore() {
+    this.logger.log('Executing updating popularity and score!');
     return Promise.all([
-      this.laptopsRepo.query(
-        'UPDATE model_entity as t1 SET "estimatedPopularity" = t2."count" FROM (SELECT "laptopId", COUNT(*) AS "count" FROM stat_tracker_entity t3 GROUP BY t3."laptopId" ) AS t2 WHERE t1.id = t2."laptopId"',
-      ),
-      await this.entityManager.query(
-        'UPDATE model_entity\n' +
-          'SET "estimatedScore" = \n' +
-          '\tCASE \n' +
-          '\t\tWHEN "score" IS NULL THEN 0\n' +
-          '\t\tELSE "score"\n' +
-          '\tEND\n' +
-          'FROM\n' +
-          '\n' +
-          '(\n' +
-          '\tSELECT \n' +
-          '\tt2.id AS laptopid,\n' +
-          '\tt2."driveScore" + t2."ramScore" + t2."batteryScore" + t2."cpuScore" + t2."gpuScore" AS score\n' +
-          '\tFROM\n' +
-          '\t(\n' +
-          '\t\tSELECT \n' +
-          '\t\t\tmodel_entity.id AS id, \n' +
-          '\t\t\tCASE \n' +
-          '\t\t\t\tWHEN model_entity."driveType" LIKE \'%SSD%\' THEN (model_entity."driveStorage"/100)\n' +
-          '\t\t\t\tELSE model_entity."driveStorage"/1000\n' +
-          '\t\t\tEND AS "driveScore",\n' +
-          '\t\t\tmodel_entity."ramAmount" AS "ramScore", \n' +
-          '\t\t\tCASE \n' +
-          '\t\t\t\tWHEN model_entity."batteryTime" IS NULL THEN 0 \n' +
-          '\t\t\t\tELSE model_entity."batteryTime"\n' +
-          '\t\t\tEND AS "batteryScore", \n' +
-          '\t\t\tcpu_b."benchmark" AS "cpuScore", \n' +
-          '\t\t\tgpu_b."benchmark" AS "gpuScore" \n' +
-          '\t\t\n' +
-          '\t\tFROM model_entity\n' +
-          '\t\tLEFT JOIN processor_entity ON model_entity."processorId" = processor_entity.id \n' +
-          '\t\t\tLEFT JOIN benchmark_entity cpu_b ON processor_entity."benchmarkId" = cpu_b.id\n' +
-          '\t\tLEFT JOIN graphics_entity ON model_entity."graphicsId" = graphics_entity.id\n' +
-          '\t\t\tLEFT JOIN benchmark_entity gpu_b ON graphics_entity."benchmarkId" = gpu_b.id\n' +
-          '\t\tWHERE model_entity."estimatedScore" = 0\n' +
-          '\t) AS t2\n' +
-          ') AS t3\n' +
-          'WHERE t3.laptopid = model_entity.id',
-      ),
+      this.laptopsRepo
+        .query(
+          'UPDATE model_entity as t1 SET "estimatedPopularity" = t2."count" FROM (SELECT "laptopId", COUNT(*) AS "count" FROM stat_tracker_entity t3 GROUP BY t3."laptopId" ) AS t2 WHERE t1.id = t2."laptopId"',
+        )
+        .then(() => {
+          this.logger.log('Sucesfully updated estimated popularity!');
+        }),
+      this.entityManager
+        .query(
+          'UPDATE model_entity\n' +
+            'SET "estimatedScore" = \n' +
+            '\tCASE \n' +
+            '\t\tWHEN "score" IS NULL THEN 0\n' +
+            '\t\tELSE "score"\n' +
+            '\tEND\n' +
+            'FROM\n' +
+            '\n' +
+            '(\n' +
+            '\tSELECT \n' +
+            '\tt2.id AS laptopid,\n' +
+            '\tt2."driveScore" + t2."ramScore" + t2."batteryScore" + t2."cpuScore" + t2."gpuScore" AS score\n' +
+            '\tFROM\n' +
+            '\t(\n' +
+            '\t\tSELECT \n' +
+            '\t\t\tmodel_entity.id AS id, \n' +
+            '\t\t\tCASE \n' +
+            '\t\t\t\tWHEN model_entity."driveType" LIKE \'%SSD%\' THEN (model_entity."driveStorage"/100)\n' +
+            '\t\t\t\tELSE model_entity."driveStorage"/1000\n' +
+            '\t\t\tEND AS "driveScore",\n' +
+            '\t\t\tmodel_entity."ramAmount" AS "ramScore", \n' +
+            '\t\t\tCASE \n' +
+            '\t\t\t\tWHEN model_entity."batteryTime" IS NULL THEN 0 \n' +
+            '\t\t\t\tELSE model_entity."batteryTime"\n' +
+            '\t\t\tEND AS "batteryScore", \n' +
+            '\t\t\tcpu_b."benchmark" AS "cpuScore", \n' +
+            '\t\t\tgpu_b."benchmark" AS "gpuScore" \n' +
+            '\t\t\n' +
+            '\t\tFROM model_entity\n' +
+            '\t\tLEFT JOIN processor_entity ON model_entity."processorId" = processor_entity.id \n' +
+            '\t\t\tLEFT JOIN benchmark_entity cpu_b ON processor_entity."benchmarkId" = cpu_b.id\n' +
+            '\t\tLEFT JOIN graphics_entity ON model_entity."graphicsId" = graphics_entity.id\n' +
+            '\t\t\tLEFT JOIN benchmark_entity gpu_b ON graphics_entity."benchmarkId" = gpu_b.id\n' +
+            '\t\tWHERE model_entity."estimatedScore" = 0\n' +
+            '\t) AS t2\n' +
+            ') AS t3\n' +
+            'WHERE t3.laptopid = model_entity.id',
+        )
+        .then(() => {
+          this.logger.log('Sucessfully added modles score!');
+        }),
     ]);
   }
 
