@@ -205,9 +205,10 @@ export class LaptopsServices implements OnModuleInit {
   }
 
   getBenchmarkStats() {
-    return this.benchmarkRepo.query(
-      'SELECT "type", MAX("benchmark"), MIN("benchmark") FROM PUBLIC.benchmark_entity GROUP BY "type"',
-    );
+    return this.benchmarkRepo.createQueryBuilder("benchmark").select("benchmark.type").addSelect('MAX(benchmark.benchmark)', "max").addSelect("MIN(benchmark.benchmark)", "min").groupBy("type").getRawMany()
+    // return this.benchmarkRepo.query(
+    //   'SELECT "type", MAX("benchmark"), MIN("benchmark") FROM PUBLIC.benchmark_entity GROUP BY "type"',
+    // );
   }
 
   @Cron(CronExpression.EVERY_12_HOURS)

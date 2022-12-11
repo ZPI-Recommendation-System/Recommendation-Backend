@@ -63,17 +63,13 @@ export const getInternalWeakFilters = (form: FormDto): WeakFilter[] => {
   }
   if (form.preferredScreenSizes && form.preferredScreenSizes.length > 0) {
     // const filtered = form.preferredScreenSizes.filter((it) => !isNaN(+it));
-    //TODO: Obsłużyć <10 i >17. Na to trzeba zrobić custom SQL Query
+
     filters.push(
       WeakFilterCreator(
         'Wielkość ekranu',
         SCREEN_SIZE(form.preferredScreenSizes),
       ),
     );
-    console.log(filters);
-    if (form.preferredScreenSizes.includes('<10')) {
-      // filters.push(WeakFilterCreator('screen_size_comparator'))
-    }
   }
   return filters;
 };

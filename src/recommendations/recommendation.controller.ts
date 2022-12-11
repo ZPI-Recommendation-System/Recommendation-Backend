@@ -12,7 +12,7 @@ export class RecommendationController {
   async getRecommendations(
     @Query('limit', ParseIntPipe) limit = 0,
     @Body() form: FormDto,
-    @Query() sort: SortingDto
+    @Query() sort: SortingDto,
   ): Promise<RecommendationDTOBack | any> {
     return this.recommendationService
       .processRecommendation(form, limit, sort)
@@ -20,7 +20,7 @@ export class RecommendationController {
         return {
           status: 'ok',
           length: it.length,
-          result: it
+          result: it,
         };
       });
 
