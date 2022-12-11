@@ -48,5 +48,8 @@ describe('LaptopsController', () => {
         ,
       ]);
     });
+    it("Benchmark stats", async () => {
+      expect(await laptopController.getBenchmarkStats()).toEqual([{"benchmark_type": "CPU", "max": 87.9, "min": 40.4}, {"benchmark_type": "GPU", "max": 88.6, "min": 2.22}])
+    });
   });
 });

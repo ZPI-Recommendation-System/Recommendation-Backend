@@ -74,7 +74,7 @@ export const UsageTypes = [
   'Najnowsze gry wysokobudżetowe',
 ];
 
-const ScreenSizes = ['<10', '10', '11', '11.5', '13', '15', '16', '17', '>17'];
+export const ScreenSizes = ['<10', '10', '11', '11.5', '13', '15', '16', '17', '>17'];
 
 export type UsageType = typeof UsageTypes[number];
 
