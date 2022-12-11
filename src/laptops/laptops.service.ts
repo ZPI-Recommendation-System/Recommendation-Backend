@@ -22,7 +22,7 @@ export class LaptopsServices implements OnModuleInit {
     setTimeout(async () => {
       this.logger.log('Executing updating popularity and score!');
       await this.updatePopularityAndScore();
-    }, 600000);
+    }, 60000);
   }
 
   findLaptop(
