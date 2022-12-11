@@ -17,10 +17,6 @@ import { CreateTables1670434726126 } from "./db/migrations/1670434726126-CreateT
 import * as process from "process";
 import { ScheduleModule } from "@nestjs/schedule";
 
-// config();
-//
-// const configService = new ConfigService();
-
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -29,7 +25,6 @@ import { ScheduleModule } from "@nestjs/schedule";
     }),
     TypeOrmModule.forRoot({
       type: "postgres",
-      // url: process.env.DB_URL,
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USER,

@@ -1,9 +1,6 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 import bcrypt from "bcrypt";
 
-// config();
-//
-// const configService = new ConfigService();
 export class CreateTables1670434726126 implements MigrationInterface {
     name = 'CreateTables1670434726126';
 
