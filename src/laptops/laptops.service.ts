@@ -19,9 +19,9 @@ export class LaptopsServices implements OnModuleInit {
   ) {}
 
   async onModuleInit() {
-    setTimeout(async () => {
+    setTimeout(() => {
       this.logger.log('Executing updating popularity and score!');
-      await this.updatePopularityAndScore();
+      this.updatePopularityAndScore();
     }, 60000);
   }
 

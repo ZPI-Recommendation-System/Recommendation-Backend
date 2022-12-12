@@ -34,7 +34,7 @@
 
 import { ApiProperty } from "@nestjs/swagger";
 import { ArrayUnique, IsBoolean, IsIn, IsNotEmpty, IsNumber, Max, Min, ValidateNested } from "class-validator";
-import { Type } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 
 //TODO: Zero jest niewiadomą/Brak filtra
 export class ScreenPreferences {
@@ -74,11 +74,26 @@ export const UsageTypes = [
   'Najnowsze gry wysokobudżetowe',
 ];
 
-export const ScreenSizes = ['<10', '10', '11', '11.5', '13', '15', '16', '17', '>17'];
+export const ScreenSizes = [
+  '<10',
+  '10',
+  '11',
+  '11.5',
+  '13',
+  '15',
+  '16',
+  '17',
+  '>17',
+];
 
 export type UsageType = typeof UsageTypes[number];
 
 export type ScreenSize = typeof ScreenSizes[number];
+
+const roundNumber = (num: number) => {
+  if (!isNaN(Number(num))) return Math.round(num);
+  return num;
+}
 
 export class FormDto {
   @IsNumber()
@@ -97,6 +112,7 @@ export class FormDto {
   usageType: UsageType; //Usage type
   @IsNumber()
   @Min(0)
+  @Transform(it => roundNumber(it.value))
   maxPricePLN: number;
 
   @ApiProperty({
@@ -105,7 +121,7 @@ export class FormDto {
   })
   @IsNotEmpty()
   @ArrayUnique()
-  @IsIn(ScreenSizes, {each: true})
+  @IsIn(ScreenSizes, { each: true })
   preferredScreenSizes: ScreenSize[];
 
   @IsNotEmpty()
@@ -121,6 +137,10 @@ export class FormDto {
   @IsNumber()
   @Min(100)
   @Max(2000)
+  @Transform((it) => {
+    if (!isNaN(Number(it.value))) return Math.round(it.value);
+    return it.value;
+  })
   minDiscSize: number;
 
   @IsNotEmpty()
