@@ -47,9 +47,12 @@ export class UserService {
     this.logger.debug('Trying to login ' + username + ' ' + password);
     const user = await this.userRepository.findOneBy({ username: username });
     this.logger.debug('User is ' + (user? user.username : "undefined"));
+    this.logger.debug(password)
+    this.logger.debug(user.password)
     if (user) {
       return undefined;
     } else {
+      this.logger.debug("Cecking paswomknsd")
       if(bcrypt.compareSync(password, user.password)){
         this.logger.debug("RETURNED PASSWORD GOOD")
         const { password, ...result } = user;
