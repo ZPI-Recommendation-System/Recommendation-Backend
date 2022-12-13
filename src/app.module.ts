@@ -32,7 +32,7 @@ import { ScheduleModule } from "@nestjs/schedule";
       database: process.env.DB_DB,
       autoLoadEntities: true,
       migrations: [CreateTables1670434726126],
-      migrationsRun: true,
+      migrationsRun: false,
     }),
     ScheduleModule.forRoot(),
     LaptopsModule,

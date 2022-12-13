@@ -46,7 +46,7 @@ export class UserService {
 
   async validateUser(username: string, password: string): Promise<any> {
     const user = await this.userRepository.findOneBy({ username: username });
-    if (user === undefined) {
+    if (user) {
       return undefined;
     } else {
       return bcrypt.compare(password, user.password).then((it) => {
