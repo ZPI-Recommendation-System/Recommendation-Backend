@@ -46,18 +46,15 @@ export class UserService {
   async validateUser(username: string, password: string): Promise<any> {
     this.logger.debug('Trying to login ' + username + ' ' + password);
     const user = await this.userRepository.findOneBy({ username: username });
-    this.logger.debug('User is ' + user);
+    this.logger.debug('User is ' + (user? user.username : "undefined"));
     if (user) {
       return undefined;
     } else {
-      return bcrypt.compare(password, user.password).then((it) => {
-        this.logger.debug('User status is ' + user + ' ' + it);
-        if (it) {
-          const { password, ...result } = user;
-          return result;
-        }
-        return undefined;
-      });
+      if(bcrypt.compareSync(password, user.password)){
+        const { password, ...result } = user;
+        return result;
+      }
+      return undefined;
     }
   }
 
