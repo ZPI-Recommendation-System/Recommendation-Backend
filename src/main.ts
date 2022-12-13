@@ -12,7 +12,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: ['log', 'debug', 'error', 'verbose', 'warn'],
   });
-  app.enableCors({ origin: '*' });
+  app.enableCors({ origin: '*', credentials: false });
 
   const config = new DocumentBuilder()
     .setTitle('ZPI Recommendation API docs')

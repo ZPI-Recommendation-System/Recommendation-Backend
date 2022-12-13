@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post } from "@nestjs/common";
 import { AdminAccess } from "../../users/auth.decorators";
 import { JobRequest, ScrapperService } from "./scrapper.service";
 import { handleException } from "../../main";
 
 
-@Controller('scrapper')
+@Controller('jobs')
 @AdminAccess
 export class ScrapperController {
   constructor(private scrapperService: ScrapperService) {}
@@ -25,8 +25,13 @@ export class ScrapperController {
     });
   }
 
-  @Get('status')
-  getStatus() {
-    return this.scrapperService.getScrapperStatus();
+  @Get('status/:name')
+  getStatus(@Param('name') name) {
+    return this.scrapperService.getScrapperStatus(name);
+  }
+
+  @Get('logs')
+  getLogs() {
+    return this.scrapperService.getLogs();
   }
 }
