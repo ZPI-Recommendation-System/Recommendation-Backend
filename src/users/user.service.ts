@@ -49,6 +49,7 @@ export class UserService {
     this.logger.debug('User is ' + (user? user.username : "undefined"));
     this.logger.debug(user.password.trim())
     if (user) {
+      this.logger.debug("User undefined")
       return undefined;
     } else {
       this.logger.debug("Cecking paswomknsd")
