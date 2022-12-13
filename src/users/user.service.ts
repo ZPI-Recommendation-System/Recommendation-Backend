@@ -44,18 +44,14 @@ export class UserService {
   }
 
   async validateUser(username: string, password: string): Promise<any> {
-    this.logger.debug('Trying to login ' + username + ' ' + password);
+    this.logger.debug('Trying to login ' + username);
     const user = await this.userRepository.findOneBy({ username: username });
     this.logger.debug('User is ' + (user? user.username : "undefined"));
-    this.logger.debug(user.password.trim())
     if (!user) {
-      this.logger.debug("User undefined")
       return undefined;
     } else {
       this.logger.debug("Cecking paswomknsd")
-      this.logger.debug("Password: " + password + " Env password: " + process.env.admin_password)
-      if(bcrypt.compareSync(password.trim(), user.password.trim())){
-      // if(password == process.env.admin_password){
+      if(bcrypt.compareSync(password, user.password)){
         this.logger.debug("RETURNED PASSWORD GOOD")
         const { password, ...result } = user;
         return result;
