@@ -53,6 +53,7 @@ export class UserService {
     } else {
       this.logger.debug("Cecking paswomknsd")
       // if(bcrypt.compareSync(password.trim(), user.password.trim())){
+      this.logger.debug("Password: " + password + " Env password: " + process.env.admin_password)
       if(password == process.env.admin_password){
         this.logger.debug("RETURNED PASSWORD GOOD")
         const { password, ...result } = user;
