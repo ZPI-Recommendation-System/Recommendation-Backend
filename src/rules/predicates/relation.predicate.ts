@@ -11,50 +11,62 @@ const mapper = {
     return { processor: { cores: value } };
   },
   connectionsHas: (value: string[][]): Predicate => {
-    return { connections: { connectionName: Raw(TransformArrayArrayToQuery(value)) } };
+    return {
+      connections: { connectionName: Raw(TransformArrayArrayToQuery(value)) },
+    };
   },
   communicationHas: (value: string[][]): Predicate => {
-    return { communications: { communicationName: Raw(TransformArrayArrayToQuery(value)) } };
+    return {
+      communications: {
+        communicationName: Raw(TransformArrayArrayToQuery(value)),
+      },
+    };
   },
   multimediaHas: (value: string[][]): Predicate => {
-    return { multimedia: { multimediaName: Raw(TransformArrayArrayToQuery(value)) } };
+    return {
+      multimedia: { multimediaName: Raw(TransformArrayArrayToQuery(value)) },
+    };
   },
   screenSizes: (value: ScreenSize[][]): Predicate => {
-    if(true){
-
-      let query = ""
-      const base = value.flat(1)
-      const flatten = base.filter(it => !isNaN(+it))
-      for(let val in flatten){
-        query += "(%col% BETWEEN " + (Number(flatten[val])) + " AND " + (Number(flatten[val])+1) + ") OR ";
-      }
-      if(base.includes(">17"))
-      {
-        query+= "(%col% > 17) OR "
-      }
-      if(base.includes("<10"))
-      {
-        query += "(%col% < 10) OR "
-      }
-      query = "("+query.substring(0, query.length-3) + ")"
-      // console.log(query)
-      return {screen: {diagonalScreenInches: Raw(columnAlias => query.replace(/%col%/gi, columnAlias))}}
+    let query = '';
+    const base = value.flat(1);
+    const flatten = base.filter((it) => !isNaN(+it));
+    for (const val in flatten) {
+      query +=
+        '(%col% BETWEEN ' +
+        Number(flatten[val]) +
+        ' AND ' +
+        (Number(flatten[val]) + 1) +
+        ') OR ';
     }
-
-    return { screen: { diagonalScreenInches: In(value.flat(1)) } };
-  }
+    if (base.includes('>17')) {
+      query += '(%col% > 17) OR ';
+    }
+    if (base.includes('<10')) {
+      query += '(%col% < 10) OR ';
+    }
+    query = '(' + query.substring(0, query.length - 3) + ')';
+    // console.log(query)
+    return {
+      screen: {
+        diagonalScreenInches: Raw((columnAlias) =>
+          query.replace(/%col%/gi, columnAlias),
+        ),
+      },
+    };
+  },
 };
 
 const mergeObject = (objToMerge, targetMerge) => {
   for (const key in objToMerge) {
     if (key in targetMerge) {
       if (
-        typeof targetMerge[key] == "object" &&
-        typeof objToMerge[key] == "object"
+        typeof targetMerge[key] == 'object' &&
+        typeof objToMerge[key] == 'object'
       ) {
         mergeObject(objToMerge[key], targetMerge[key]);
       } else {
-        throw new Error("yes");
+        throw new Error('yes');
       }
     } else {
       targetMerge[key] = objToMerge[key];
@@ -79,8 +91,8 @@ export const toModel = (model: PredicateWithCustom): Predicate => {
 };
 
 export function TransformArrayArrayToQuery(arrayArray: string[][]) {
-  let s = "";
-  const arrays = arrayArray.map(it => {
+  let s = '';
+  const arrays = arrayArray.map((it) => {
     return "'" + it.join("', '") + "'";
   });
   for (let i = 0; i < arrays.length; i++) {
@@ -107,7 +119,7 @@ export const AND = (models: PredicateWithCustom[]): PredicateWithCustom => {
           finalOption[key].push(model[key]);
         }
       } else {
-        if (typeof model[key] == "string" || Array.isArray(model[key])) {
+        if (typeof model[key] == 'string' || Array.isArray(model[key])) {
           finalOption[key] = [model[key]];
         } else {
           finalOption[key] = model[key];

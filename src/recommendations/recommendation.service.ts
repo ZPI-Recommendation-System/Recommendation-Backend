@@ -85,19 +85,12 @@ export class RecommendationService {
     else if (limit < 5) limit = 5;
     const strongFilter = this.getStrongFilters(form);
     const weakFilters = this.getWeakFilters(form);
-    // return {
-    //   strong: strongFilter,
-    //   weak: weakFilters,
-    //   finalResult: this.combineStrongAndWeak(strongFilter, weakFilters)
-    // };
-    // return strongFilter;
     const lists = [];
     let lastLaptops = undefined;
     const currentWeakFilters = [
       ...weakFilters.sort((it, it2) => it.weight - it2.weight),
     ];
     let deletedWeakFilters = [];
-    this.logger.debug(currentWeakFilters.map((it) => [it.ruleName, it.weight]));
     while (
       lastLaptops == undefined ||
       (currentWeakFilters.length > 0 && lastLaptops.items.length < 3)
