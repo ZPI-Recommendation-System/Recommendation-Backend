@@ -51,9 +51,11 @@ export class UserService {
       return undefined;
     } else {
       if(bcrypt.compareSync(password, user.password)){
+        this.logger.debug("RETURNED PASSWORD GOOD")
         const { password, ...result } = user;
         return result;
       }
+      this.logger.debug("RETURNED PASSWORD BAD")
       return undefined;
     }
   }
