@@ -1,6 +1,10 @@
+export const JOB_SCRAPE = "scrapper.job.scrape"
+export const JOB_ML_LEARN = "scrapper.job.ml_learn"
+export const JOB_ML_LABEL = "scrapper.job.ml_label"
+export const JOB_CLEAR_DB = "scrapper.job.clear_db"
 export const SCRAPPER_JOB_REQUEST = 'scrapper.auth.request';
-export const SCRAPPER_WORK_STATUS = 'scrapper.work.status';
-export const SCRAPPER_WORK_PING = 'scrapper.work.ping';
+export const SCRAPPER_WORK_STATUS = 'scrapper.job.status';
+export const SCRAPER_STATUS_PING = 'scrapper.status.ping';
 export const SCRAPPER_WORK_CANCEL = 'scrapper.work.cancel';
 
 export interface ScrapperAuthRequestDto {
@@ -20,6 +24,7 @@ export interface ScrapperAuthRequestDto {
 
 export type WorkStatus =
   | 'waiting_for_job'
+  | 'auth'
   | 'authorised'
   | 'running'
   | 'finished'

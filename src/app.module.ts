@@ -21,10 +21,10 @@ import { ScheduleModule } from "@nestjs/schedule";
   imports: [
     ConfigModule.forRoot(),
     EventEmitterModule.forRoot({
-      ignoreErrors: true,
+      ignoreErrors: true
     }),
     TypeOrmModule.forRoot({
-      type: 'postgres',
+      type: "postgres",
       host: process.env.DB_HOST,
       port: +process.env.DB_PORT,
       username: process.env.DB_USER,
@@ -33,6 +33,7 @@ import { ScheduleModule } from "@nestjs/schedule";
       autoLoadEntities: true,
       migrations: [CreateTables1670434726126],
       migrationsRun: true,
+      migrationsTransactionMode: "all",
     }),
     ScheduleModule.forRoot(),
     LaptopsModule,
