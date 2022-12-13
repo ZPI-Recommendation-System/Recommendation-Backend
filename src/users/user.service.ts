@@ -17,9 +17,8 @@ export class UserService {
 
   constructor(
     @InjectRepository(UserEntity)
-    private userRepository: Repository<UserEntity>
-  ) {
-  }
+    private userRepository: Repository<UserEntity>,
+  ) {}
 
   async login(user: UserEntity) {
     if (user) {
@@ -45,23 +44,26 @@ export class UserService {
   }
 
   async validateUser(username: string, password: string): Promise<any> {
+    this.logger.debug('Trying to login ' + username + ' ' + password);
     const user = await this.userRepository.findOneBy({ username: username });
+    this.logger.debug('User is ' + user);
     if (user) {
       return undefined;
     } else {
       return bcrypt.compare(password, user.password).then((it) => {
+        this.logger.debug('User status is ' + user + ' ' + it);
         if (it) {
           const { password, ...result } = user;
           return result;
         }
-        return null;
+        return undefined;
       });
     }
   }
 
   async findUserBySessionToken(tokenBearer: string) {
     if (tokenBearer) {
-      const token = tokenBearer.replace("Bearer ", "");
+      const token = tokenBearer.replace('Bearer ', '');
       const user = this.tokens.find((it) => it.token == token);
       if (user) {
         return this.findUser(user.userId);
@@ -70,16 +72,14 @@ export class UserService {
       }
     }
     return undefined;
-
   }
 
-
-  async getAdmin(){
-    return this.userRepository.findOneBy({username: "admin"});
+  async getAdmin() {
+    return this.userRepository.findOneBy({ username: 'admin' });
   }
 
   register(user: UserEntity) {
-    user.password = bcrypt.hashSync(user.password, 10)
-    return this.userRepository.save(user)
+    user.password = bcrypt.hashSync(user.password, 10);
+    return this.userRepository.save(user);
   }
 }
