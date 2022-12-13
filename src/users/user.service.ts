@@ -48,14 +48,14 @@ export class UserService {
     const user = await this.userRepository.findOneBy({ username: username });
     this.logger.debug('User is ' + (user? user.username : "undefined"));
     this.logger.debug(user.password.trim())
-    if (user) {
+    if (!user) {
       this.logger.debug("User undefined")
       return undefined;
     } else {
       this.logger.debug("Cecking paswomknsd")
-      // if(bcrypt.compareSync(password.trim(), user.password.trim())){
       this.logger.debug("Password: " + password + " Env password: " + process.env.admin_password)
-      if(password == process.env.admin_password){
+      if(bcrypt.compareSync(password.trim(), user.password.trim())){
+      // if(password == process.env.admin_password){
         this.logger.debug("RETURNED PASSWORD GOOD")
         const { password, ...result } = user;
         return result;
