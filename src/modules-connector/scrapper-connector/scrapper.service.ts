@@ -24,7 +24,7 @@ export interface JobRequest{
 @Injectable()
 export class ScrapperService {
   logger = new Logger(ScrapperService.name);
-  private scrapperStatus: ScrapperStatus = {jobName: "scraper", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: [], lastRunStatus: "-"};
+  private scrapperStatus: ScrapperStatus = {jobName: "scraper", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: [], lastRunStatus: "ok"};
   private mlLearnStatus: ScrapperStatus = {jobName: "ml_learn", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: [], lastRunStatus: "-"};
   private mlLabelStatus: ScrapperStatus = {jobName: "ml_label", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: [], lastRunStatus: "-"};
   private clearDbStatus: ScrapperStatus = {jobName: "clear_db", status: "unknown", lastTimeEstimate: 0, lastPayload: undefined, lines: [], lastRunStatus: "-"};
