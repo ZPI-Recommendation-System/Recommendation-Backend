@@ -36,7 +36,6 @@ export class ScrapperService {
   async requestJob(payload: JobRequest): Promise<string> {
     return this.eventEmmiter.emitAsync(SCRAPPER_JOB_REQUEST, payload).then((it) => {
       if (it) {
-        this.logger.debug(it)
         return it[0];
       } else {
         return { status: 'error' };
@@ -46,8 +45,6 @@ export class ScrapperService {
 
   getScrapperStatus(name: string) {
     let x;
-
-    this.logger.debug(name)
 
     switch (name) {
       case "scraper":
@@ -64,8 +61,6 @@ export class ScrapperService {
         break
     }
 
-    this.logger.debug(x)
-
     return x;
   }
 
@@ -73,6 +68,7 @@ export class ScrapperService {
   async scrapperWorkStatusEvent(scrapperDto: ScrapperWorkStatusDto) {
     this.logger.debug("SCRAPPER_WORK_STATUS")
     this.logger.debug(scrapperDto)
+
     try {
       let x;
 
