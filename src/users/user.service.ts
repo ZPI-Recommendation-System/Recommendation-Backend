@@ -46,7 +46,7 @@ export class UserService {
   async validateUser(username: string, password: string): Promise<any> {
     this.logger.debug('Trying to login ' + username + ' ' + password);
     const user = await this.userRepository.findOneBy({ username: username });
-    this.logger.debug('User is ' + (user? user.username : "undefined"));
+    this.logger.debug('User is ' + (user ? user.username : "undefined"));
     this.logger.debug(user.password.trim())
     if (user) {
       return undefined;

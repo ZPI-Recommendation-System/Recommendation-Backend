@@ -66,7 +66,7 @@ const mergeObject = (objToMerge, targetMerge) => {
       ) {
         mergeObject(objToMerge[key], targetMerge[key]);
       } else {
-        throw new Error('yes');
+        targetMerge[key] = objToMerge[key];
       }
     } else {
       targetMerge[key] = objToMerge[key];
